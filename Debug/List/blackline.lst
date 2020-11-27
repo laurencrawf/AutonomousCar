@@ -1,0 +1,403 @@
+###############################################################################
+#
+# IAR C/C++ Compiler V7.12.3.989/W32 for MSP430           24/Apr/2020  12:34:17
+# Copyright 1996-2019 IAR Systems AB.
+# PC-locked license - IAR Embedded Workbench for MSP430, 8K KickStart Edition 7.12
+#
+#    __rt_version  =  3
+#    __double_size =  32
+#    __reg_r4      =  free
+#    __reg_r5      =  free
+#    __pic         =  no
+#    __core        =  430X
+#    __data_model  =  small
+#    __code_model  =  large
+#    Source file   =  
+#        C:\Users\laure\OneDrive\Documents\ECE_306_Code\Project 10 Code
+#        Submission\blackline.c
+#    Command line  =  
+#        -f C:\Users\laure\AppData\Local\Temp\EWEBCC.tmp
+#        ("C:\Users\laure\OneDrive\Documents\ECE_306_Code\Project 10 Code
+#        Submission\blackline.c" -lC
+#        "C:\Users\laure\OneDrive\Documents\ECE_306_Code\Project 10 Code
+#        Submission\Debug\List" -o
+#        "C:\Users\laure\OneDrive\Documents\ECE_306_Code\Project 10 Code
+#        Submission\Debug\Obj" --no_cse --no_unroll --no_inline
+#        --no_code_motion --no_tbaa --debug -D__MSP430FR2355__ -e --double=32
+#        --dlib_config "C:\Program Files (x86)\IAR Systems\Embedded Workbench
+#        8.0\430\lib\dlib\dl430xlsfn.h" -I ./\ --core=430X --data_model=small
+#        -On --multiplier=32 --hw_workaround=CPU40 --code_model=large)
+#    Locale        =  English_USA.1252
+#    List file     =  
+#        C:\Users\laure\OneDrive\Documents\ECE_306_Code\Project 10 Code
+#        Submission\Debug\List\blackline.lst
+#    Object file   =  
+#        C:\Users\laure\OneDrive\Documents\ECE_306_Code\Project 10 Code
+#        Submission\Debug\Obj\blackline.r43
+#
+###############################################################################
+
+C:\Users\laure\OneDrive\Documents\ECE_306_Code\Project 10 Code Submission\blackline.c
+      1          //------------------------------------------------------------------------------
+      2          #include  "functions.h"
+      3          #include  "msp430.h"
+
+   \                                 In  segment DATA16_AN, at 0x202
+   \   union <unnamed> _A_PAOUT_L
+   \                     _A_PAOUT_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x242
+   \   union <unnamed> _A_PCOUT_L
+   \                     _A_PCOUT_L:
+   \   000000                DS8 2
+      4          #include <string.h>
+      5          #include "macros.h"
+      6          //------------------------------------------------------------------------------
+      7          
+      8          // Global Variables
+      9          extern char display_line[HEIGHTFOUR][ELEVENTH_CHARACTER];
+     10          extern char *display[HEIGHTFOUR];
+     11          extern unsigned char display_mode;
+     12          extern volatile unsigned char display_changed;
+     13          extern volatile unsigned char update_display;
+     14          extern volatile unsigned int update_display_count;
+     15          
+     16          extern volatile unsigned int display_counter;
+     17          extern volatile unsigned int status_counter; 
+     18          
+     19          extern volatile unsigned int SW2_pressed;
+     20          
+     21          extern volatile unsigned int ADC_Left_Detect;
+     22          extern volatile unsigned int ADC_Right_Detect;
+     23          //extern volatile unsigned int line_counter;
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     24          int detected = RESET_STATE;
+   \                     detected:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_I, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_copy
+     25          int move = TRUE;
+   \                     move:
+   \   000000                DS8 2
+   \   000002                REQUIRE `?<Initializer for move>`
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     26          volatile unsigned int switch_case = RESET_STATE;
+   \                     switch_case:
+   \   000000                DS8 2
+     27          extern volatile unsigned int project7_counter;
+     28          extern int display_flag;
+     29          
+     30          //-------------------------------------------------------------------------------
+     31          
+
+   \                                 In  segment CODE, align 2
+     32          void BlackLineNav(void){
+   \                     BlackLineNav:
+     33            switch(switch_case){
+   \   000000   1F42....     MOV.W   &switch_case, R15
+   \   000004   0F83         SUB.W   #0x0, R15
+   \   000006   0724         JEQ     ??BlackLineNav_4
+   \   000008   1F83         SUB.W   #0x1, R15
+   \   00000A   3724         JEQ     ??BlackLineNav_5
+   \   00000C   1F83         SUB.W   #0x1, R15
+   \   00000E   4C24         JEQ     ??BlackLineNav_6
+   \   000010   1F83         SUB.W   #0x1, R15
+   \   000012   6324         JEQ     ??BlackLineNav_7
+   \   000014   1001         RETA
+     34               case WAITING:
+     35                strcpy(display_line[LINEZERO], " Intercept");
+   \                     ??BlackLineNav_4:
+   \   000016   3D40....     MOV.W   #`?<Constant " Intercept">`, R13
+   \   00001A   3C40....     MOV.W   #display_line, R12
+   \   00001E   ........     CALLA   #strcpy
+     36                update_string(display_line[LINEZERO], LINEZERO);
+   \   000022   0D43         MOV.W   #0x0, R13
+   \   000024   ........     CALLA   #update_string
+     37                right_reverse_pwm(RESET_STATE);
+   \   000028   0C43         MOV.W   #0x0, R12
+   \   00002A   ........     CALLA   #right_reverse_pwm
+     38                left_reverse_pwm(RESET_STATE);
+   \   00002E   0C43         MOV.W   #0x0, R12
+   \   000030   ........     CALLA   #left_reverse_pwm
+     39                right_forward_pwm(faster);
+   \   000034   3C403075     MOV.W   #0x7530, R12
+   \   000038   ........     CALLA   #right_forward_pwm
+     40                left_forward_pwm(MEDFAST);
+   \   00003C   3C40A861     MOV.W   #0x61a8, R12
+   \   000040   ........     CALLA   #left_forward_pwm
+     41                if( (ADC_Right_Detect > black_line) || (ADC_Left_Detect > black_line) ){
+   \   000044   B290C900.... CMP.W   #0xc9, &ADC_Right_Detect
+   \   00004A   042C         JC      ??BlackLineNav_8
+   \   00004C   B290C900.... CMP.W   #0xc9, &ADC_Left_Detect
+   \   000052   BB28         JNC     ??BlackLineNav_0
+     42                  P6OUT |= GRN_LED;
+   \                     ??BlackLineNav_8:
+   \   000054   F2D040004302 BIS.B   #0x40, &0x243
+     43                  strcpy(display_line[LINEZERO], " Waiting  ");
+   \   00005A   3D40....     MOV.W   #`?<Constant " Waiting  ">`, R13
+   \   00005E   3C40....     MOV.W   #display_line, R12
+   \   000062   ........     CALLA   #strcpy
+     44                  update_string(display_line[LINEZERO], LINEZERO);
+   \   000066   0D43         MOV.W   #0x0, R13
+   \   000068   ........     CALLA   #update_string
+     45                  stop_wheels_pwm();         
+   \   00006C   ........     CALLA   #stop_wheels_pwm
+     46                  switch_case = DETECT;
+   \   000070   9243....     MOV.W   #0x1, &switch_case
+     47                  status_counter = RESET_STATE;
+   \   000074   8243....     MOV.W   #0x0, &status_counter
+     48                }
+     49                
+     50                break;
+   \   000078   1001         RETA
+     51              case DETECT:
+     52                if( status_counter < turnincnt){
+   \                     ??BlackLineNav_5:
+   \   00007A   B2901E00.... CMP.W   #0x1e, &status_counter
+   \   000080   022C         JC      ??BlackLineNav_9
+     53                stop_wheels_pwm();
+   \   000082   ........     BRA     #stop_wheels_pwm
+     54                }
+     55                else{
+     56                right_reverse_pwm(RESET_STATE);
+   \                     ??BlackLineNav_9:
+   \   000086   0C43         MOV.W   #0x0, R12
+   \   000088   ........     CALLA   #right_reverse_pwm
+     57                left_forward_pwm(RESET_STATE);
+   \   00008C   0C43         MOV.W   #0x0, R12
+   \   00008E   ........     CALLA   #left_forward_pwm
+     58                right_forward_pwm(fast);
+   \   000092   3C40204E     MOV.W   #0x4e20, R12
+   \   000096   ........     CALLA   #right_forward_pwm
+     59                left_reverse_pwm(fast);
+   \   00009A   3C40204E     MOV.W   #0x4e20, R12
+   \   00009E   ........     CALLA   #left_reverse_pwm
+     60                switch_case = TURN;
+   \   0000A2   A243....     MOV.W   #0x2, &switch_case
+     61                }
+     62                break;
+   \   0000A6   1001         RETA
+     63              case TURN:
+     64                if( (ADC_Right_Detect > black_line) &&  (ADC_Left_Detect > black_line) ){
+   \                     ??BlackLineNav_6:
+   \   0000A8   B290C900.... CMP.W   #0xc9, &ADC_Right_Detect
+   \   0000AE   8D28         JNC     ??BlackLineNav_0
+   \   0000B0   B290C900.... CMP.W   #0xc9, &ADC_Left_Detect
+   \   0000B6   8928         JNC     ??BlackLineNav_0
+     65                    strcpy(display_line[LINEZERO], " Turning  ");
+   \   0000B8   3D40....     MOV.W   #`?<Constant " Turning  ">`, R13
+   \   0000BC   3C40....     MOV.W   #display_line, R12
+   \   0000C0   ........     CALLA   #strcpy
+     66            update_string(display_line[LINEZERO], LINEZERO);
+   \   0000C4   0D43         MOV.W   #0x0, R13
+   \   0000C6   ........     CALLA   #update_string
+     67                  stop_wheels_pwm();
+   \   0000CA   ........     CALLA   #stop_wheels_pwm
+     68                 // line_counter = RESET_STATE;
+     69                  switch_case = CIRCLING;
+   \   0000CE   B2400300.... MOV.W   #0x3, &switch_case
+     70                  detected = TRUE;
+   \   0000D4   9243....     MOV.W   #0x1, &detected
+     71                }
+     72                // Ctrl :
+     73                
+     74                // Det ->    <- |     BL-K    | ->
+     75                //           ^                   ^
+     76                //         slow down            slow down
+     77                //         right                  left
+     78                //    (incrmentally)
+     79                //                      ^
+     80                //                Both speed up
+     81                break;
+   \   0000D8   1001         RETA
+     82              case CIRCLING:
+     83                            strcpy(display_line[LINEZERO], " Circling ");
+   \                     ??BlackLineNav_7:
+   \   0000DA   3D40....     MOV.W   #`?<Constant " Circling ">`, R13
+   \   0000DE   3C40....     MOV.W   #display_line, R12
+   \   0000E2   ........     CALLA   #strcpy
+     84            update_string(display_line[LINEZERO], LINEZERO);
+   \   0000E6   0D43         MOV.W   #0x0, R13
+   \   0000E8   ........     CALLA   #update_string
+     85                   if( (ADC_Right_Detect > black_line) && (ADC_Left_Detect < black_line)){ //right on left off
+   \   0000EC   B290C900.... CMP.W   #0xc9, &ADC_Right_Detect
+   \   0000F2   1728         JNC     ??BlackLineNav_10
+   \   0000F4   B290C800.... CMP.W   #0xc8, &ADC_Left_Detect
+   \   0000FA   132C         JC      ??BlackLineNav_10
+     86                    //stop_wheels_pwm();
+     87                   P1OUT |= RED_LED;
+   \   0000FC   D2D30202     BIS.B   #0x1, &0x202
+     88                    P6OUT &= ~GRN_LED;
+   \   000100   F2C040004302 BIC.B   #0x40, &0x243
+     89                    left_reverse_pwm(RESET_STATE);
+   \   000106   0C43         MOV.W   #0x0, R12
+   \   000108   ........     CALLA   #left_reverse_pwm
+     90                    right_reverse_pwm(RESET_STATE);
+   \   00010C   0C43         MOV.W   #0x0, R12
+   \   00010E   ........     CALLA   #right_reverse_pwm
+     91                    left_forward_pwm(med);
+   \   000112   3C401027     MOV.W   #0x2710, R12
+   \   000116   ........     CALLA   #left_forward_pwm
+     92                    right_forward_pwm(faster);
+   \   00011A   3C403075     MOV.W   #0x7530, R12
+   \   00011E   ........     CALLA   #right_forward_pwm
+     93                  }
+     94                  if((ADC_Right_Detect < black_line) && (ADC_Left_Detect > black_line)){   //left on right off
+   \                     ??BlackLineNav_10:
+   \   000122   B290C800.... CMP.W   #0xc8, &ADC_Right_Detect
+   \   000128   172C         JC      ??BlackLineNav_11
+   \   00012A   B290C900.... CMP.W   #0xc9, &ADC_Left_Detect
+   \   000130   1328         JNC     ??BlackLineNav_11
+     95                    //stop_wheels_pwm();
+     96                    P1OUT &= ~RED_LED;
+   \   000132   D2C30202     BIC.B   #0x1, &0x202
+     97                    P6OUT |= GRN_LED;
+   \   000136   F2D040004302 BIS.B   #0x40, &0x243
+     98                    left_reverse_pwm(RESET_STATE);
+   \   00013C   0C43         MOV.W   #0x0, R12
+   \   00013E   ........     CALLA   #left_reverse_pwm
+     99                    right_reverse_pwm(RESET_STATE);
+   \   000142   0C43         MOV.W   #0x0, R12
+   \   000144   ........     CALLA   #right_reverse_pwm
+    100                    left_forward_pwm(faster);
+   \   000148   3C403075     MOV.W   #0x7530, R12
+   \   00014C   ........     CALLA   #left_forward_pwm
+    101                    right_forward_pwm(med);
+   \   000150   3C401027     MOV.W   #0x2710, R12
+   \   000154   ........     CALLA   #right_forward_pwm
+    102                  }
+    103                  if((ADC_Right_Detect > black_line) && (ADC_Left_Detect > black_line)){  //both on
+   \                     ??BlackLineNav_11:
+   \   000158   B290C900.... CMP.W   #0xc9, &ADC_Right_Detect
+   \   00015E   1728         JNC     ??BlackLineNav_12
+   \   000160   B290C900.... CMP.W   #0xc9, &ADC_Left_Detect
+   \   000166   1328         JNC     ??BlackLineNav_12
+    104                    //stop_wheels_pwm();
+    105                    P1OUT |= RED_LED;
+   \   000168   D2D30202     BIS.B   #0x1, &0x202
+    106                    P6OUT |= GRN_LED;
+   \   00016C   F2D040004302 BIS.B   #0x40, &0x243
+    107                    left_reverse_pwm(RESET_STATE);
+   \   000172   0C43         MOV.W   #0x0, R12
+   \   000174   ........     CALLA   #left_reverse_pwm
+    108                    right_reverse_pwm(RESET_STATE);
+   \   000178   0C43         MOV.W   #0x0, R12
+   \   00017A   ........     CALLA   #right_reverse_pwm
+    109                    left_forward_pwm(fast);
+   \   00017E   3C40204E     MOV.W   #0x4e20, R12
+   \   000182   ........     CALLA   #left_forward_pwm
+    110                    right_forward_pwm(fast);
+   \   000186   3C40204E     MOV.W   #0x4e20, R12
+   \   00018A   ........     CALLA   #right_forward_pwm
+    111                  }
+    112                  if( (ADC_Right_Detect < black_line) && (ADC_Left_Detect < black_line) ){  //both off
+   \                     ??BlackLineNav_12:
+   \   00018E   B290C800.... CMP.W   #0xc8, &ADC_Right_Detect
+   \   000194   172C         JC      ??BlackLineNav_13
+   \   000196   B290C800.... CMP.W   #0xc8, &ADC_Left_Detect
+   \   00019C   132C         JC      ??BlackLineNav_13
+    113                    //stop_wheels_pwm();
+    114                    P1OUT &= ~RED_LED;
+   \   00019E   D2C30202     BIC.B   #0x1, &0x202
+    115                    P6OUT &= ~GRN_LED;
+   \   0001A2   F2C040004302 BIC.B   #0x40, &0x243
+    116                    left_forward_pwm(RESET_STATE);
+   \   0001A8   0C43         MOV.W   #0x0, R12
+   \   0001AA   ........     CALLA   #left_forward_pwm
+    117                    right_forward_pwm(RESET_STATE);
+   \   0001AE   0C43         MOV.W   #0x0, R12
+   \   0001B0   ........     CALLA   #right_forward_pwm
+    118                    left_reverse_pwm(med);
+   \   0001B4   3C401027     MOV.W   #0x2710, R12
+   \   0001B8   ........     CALLA   #left_reverse_pwm
+    119                    right_reverse_pwm(med);
+   \   0001BC   3C401027     MOV.W   #0x2710, R12
+   \   0001C0   ........     CALLA   #right_reverse_pwm
+    120                  }
+    121                  switch_case = CIRCLING;
+   \                     ??BlackLineNav_13:
+   \   0001C4   B2400300.... MOV.W   #0x3, &switch_case
+    122          
+    123              default: break;
+    124              }
+    125          }
+   \                     ??BlackLineNav_0:
+   \   0001CA   1001         RETA
+   \   0001CC                REQUIRE _A_PCOUT_L
+   \   0001CC                REQUIRE _A_PAOUT_L
+
+   \                                 In  segment DATA16_ID, align 2, align-sorted
+   \                     `?<Initializer for move>`:
+   \   000000   0100         DC16 1
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant " Intercept">`:
+   \   000000   20496E746572 DC8 " Intercept"
+   \            6365707400  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant " Waiting  ">`:
+   \   000000   205761697469 DC8 " Waiting  "
+   \            6E67202000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant " Turning  ">`:
+   \   000000   205475726E69 DC8 " Turning  "
+   \            6E67202000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant " Circling ">`:
+   \   000000   20436972636C DC8 " Circling "
+   \            696E672000  
+
+   Maximum stack usage in bytes:
+
+   CSTACK Function
+   ------ --------
+      4   BlackLineNav
+        4   -> left_forward_pwm
+        4   -> left_reverse_pwm
+        4   -> right_forward_pwm
+        4   -> right_reverse_pwm
+        0   -> stop_wheels_pwm
+        4   -> stop_wheels_pwm
+        4   -> strcpy
+        4   -> update_string
+
+
+   Segment part sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+      11  ?<Constant " Circling ">
+      11  ?<Constant " Intercept">
+      11  ?<Constant " Turning  ">
+      11  ?<Constant " Waiting  ">
+       2  ?<Initializer for move>
+     460  BlackLineNav
+       2  _A_PAOUT_L
+       2  _A_PCOUT_L
+       2  detected
+       2  move
+       2  switch_case
+
+ 
+ 460 bytes in segment CODE
+   4 bytes in segment DATA16_AN
+  44 bytes in segment DATA16_C
+   2 bytes in segment DATA16_I
+   2 bytes in segment DATA16_ID
+   4 bytes in segment DATA16_Z
+ 
+ 460 bytes of CODE  memory
+  46 bytes of CONST memory
+   6 bytes of DATA  memory (+ 4 bytes shared)
+
+Errors: none
+Warnings: none

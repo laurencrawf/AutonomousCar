@@ -1,0 +1,118 @@
+###############################################################################
+#
+# IAR C/C++ Compiler V7.12.3.989/W32 for MSP430           24/Apr/2020  12:34:17
+# Copyright 1996-2019 IAR Systems AB.
+# PC-locked license - IAR Embedded Workbench for MSP430, 8K KickStart Edition 7.12
+#
+#    __rt_version  =  3
+#    __double_size =  32
+#    __reg_r4      =  free
+#    __reg_r5      =  free
+#    __pic         =  no
+#    __core        =  430X
+#    __data_model  =  small
+#    __code_model  =  large
+#    Source file   =  
+#        C:\Users\laure\OneDrive\Documents\ECE_306_Code\Project 10 Code
+#        Submission\switches.c
+#    Command line  =  
+#        -f C:\Users\laure\AppData\Local\Temp\EWEDCB.tmp
+#        ("C:\Users\laure\OneDrive\Documents\ECE_306_Code\Project 10 Code
+#        Submission\switches.c" -lC
+#        "C:\Users\laure\OneDrive\Documents\ECE_306_Code\Project 10 Code
+#        Submission\Debug\List" -o
+#        "C:\Users\laure\OneDrive\Documents\ECE_306_Code\Project 10 Code
+#        Submission\Debug\Obj" --no_cse --no_unroll --no_inline
+#        --no_code_motion --no_tbaa --debug -D__MSP430FR2355__ -e --double=32
+#        --dlib_config "C:\Program Files (x86)\IAR Systems\Embedded Workbench
+#        8.0\430\lib\dlib\dl430xlsfn.h" -I ./\ --core=430X --data_model=small
+#        -On --multiplier=32 --hw_workaround=CPU40 --code_model=large)
+#    Locale        =  English_USA.1252
+#    List file     =  
+#        C:\Users\laure\OneDrive\Documents\ECE_306_Code\Project 10 Code
+#        Submission\Debug\List\switches.lst
+#    Object file   =  
+#        C:\Users\laure\OneDrive\Documents\ECE_306_Code\Project 10 Code
+#        Submission\Debug\Obj\switches.r43
+#
+###############################################################################
+
+C:\Users\laure\OneDrive\Documents\ECE_306_Code\Project 10 Code Submission\switches.c
+      1          #include  "functions.h"
+      2          #include  "msp430.h"
+      3          #include <string.h>
+      4          #include "macros.h"
+      5          
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+      6          int SW1_status;
+   \                     SW1_status:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+      7          int SW2_status;
+   \                     SW2_status:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+      8          int counter = RESET_STATE;
+   \                     counter:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+      9          int enable = RESET_STATE;
+   \                     enable:
+   \   000000                DS8 2
+     10          
+     11          extern char display_line[HEIGHTFOUR][ELEVENTH_CHARACTER];
+     12          extern char *display[HEIGHTFOUR];
+     13          
+     14          extern volatile unsigned char display_changed;
+     15          extern volatile unsigned char update_display;
+     16          extern volatile unsigned int update_display_count;
+     17          
+
+   \                                 In  segment CODE, align 2
+     18          void Switches_Process(void){
+   \                     Switches_Process:
+     19            
+     20          }
+   \   000000   1001         RETA
+     21              
+     22          
+     23          
+     24              
+     25            
+     26          
+     27              
+
+   Maximum stack usage in bytes:
+
+   CSTACK Function
+   ------ --------
+      4   Switches_Process
+
+
+   Segment part sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       2  SW1_status
+       2  SW2_status
+       2  Switches_Process
+       2  counter
+       2  enable
+
+ 
+ 2 bytes in segment CODE
+ 8 bytes in segment DATA16_Z
+ 
+ 2 bytes of CODE memory
+ 8 bytes of DATA memory
+
+Errors: none
+Warnings: none

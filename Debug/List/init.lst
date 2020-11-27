@@ -1,0 +1,132 @@
+###############################################################################
+#
+# IAR C/C++ Compiler V7.12.3.989/W32 for MSP430           24/Apr/2020  12:34:17
+# Copyright 1996-2019 IAR Systems AB.
+# PC-locked license - IAR Embedded Workbench for MSP430, 8K KickStart Edition 7.12
+#
+#    __rt_version  =  3
+#    __double_size =  32
+#    __reg_r4      =  free
+#    __reg_r5      =  free
+#    __pic         =  no
+#    __core        =  430X
+#    __data_model  =  small
+#    __code_model  =  large
+#    Source file   =  
+#        C:\Users\laure\OneDrive\Documents\ECE_306_Code\Project 10 Code
+#        Submission\init.c
+#    Command line  =  
+#        -f C:\Users\laure\AppData\Local\Temp\EWEC6A.tmp
+#        ("C:\Users\laure\OneDrive\Documents\ECE_306_Code\Project 10 Code
+#        Submission\init.c" -lC
+#        "C:\Users\laure\OneDrive\Documents\ECE_306_Code\Project 10 Code
+#        Submission\Debug\List" -o
+#        "C:\Users\laure\OneDrive\Documents\ECE_306_Code\Project 10 Code
+#        Submission\Debug\Obj" --no_cse --no_unroll --no_inline
+#        --no_code_motion --no_tbaa --debug -D__MSP430FR2355__ -e --double=32
+#        --dlib_config "C:\Program Files (x86)\IAR Systems\Embedded Workbench
+#        8.0\430\lib\dlib\dl430xlsfn.h" -I ./\ --core=430X --data_model=small
+#        -On --multiplier=32 --hw_workaround=CPU40 --code_model=large)
+#    Locale        =  English_USA.1252
+#    List file     =  
+#        C:\Users\laure\OneDrive\Documents\ECE_306_Code\Project 10 Code
+#        Submission\Debug\List\init.lst
+#    Object file   =  
+#        C:\Users\laure\OneDrive\Documents\ECE_306_Code\Project 10 Code
+#        Submission\Debug\Obj\init.r43
+#
+###############################################################################
+
+C:\Users\laure\OneDrive\Documents\ECE_306_Code\Project 10 Code Submission\init.c
+      1          //------------------------------------------------------------------------------
+      2          // Description: This file containes the initial display conditions
+      3          // 1/27/2020
+      4          // Lauren Crawford
+      5          //  Built with IAR Embedded Workbench Version: V4.10A/W32 (5.40.1)
+      6          //------------------------------------------------------------------------------
+      7          
+      8          #include  "functions.h"
+      9          #include  "msp430.h"
+     10          #include <string.h>
+     11          #include "macros.h"
+     12          
+     13          extern char display_line[HEIGHTFOUR][ELEVENTH_CHARACTER];
+     14          extern volatile unsigned char update_display;
+     15          extern char *display[HEIGHTFOUR];
+     16          extern volatile unsigned int update_display_count;
+     17          
+
+   \                                 In  segment CODE, align 2
+     18          void Init_Conditions(void){
+   \                     Init_Conditions:
+   \   000000   0A12         PUSH.W  R10
+     19          //------------------------------------------------------------------------------
+     20            int i;
+     21          
+     22            for(i=START_INTEGER;i<END_INTEGER;i++){
+   \   000002   0A43         MOV.W   #0x0, R10
+   \                     ??Init_Conditions_0:
+   \   000004   3A900B00     CMP.W   #0xb, R10
+   \   000008   0A34         JGE     ??Init_Conditions_1
+     23              display_line[LINEZERO][i] = RESET_STATE;
+   \   00000A   CA43....     MOV.B   #0x0, display_line(R10)
+     24              display_line[LINEONE][i] = RESET_STATE;
+   \   00000E   CA43....     MOV.B   #0x0, display_line + 11(R10)
+     25              display_line[LINETWO][i] = RESET_STATE;
+   \   000012   CA43....     MOV.B   #0x0, display_line + 22(R10)
+     26              display_line[LINETHREE][i] = RESET_STATE;
+   \   000016   CA43....     MOV.B   #0x0, display_line + 33(R10)
+     27            }
+   \   00001A   1A53         ADD.W   #0x1, R10
+   \   00001C   F33F         JMP     ??Init_Conditions_0
+     28            display_line[LINEZERO][TENTH_CHARACTER] = RESET_STATE;
+   \                     ??Init_Conditions_1:
+   \   00001E   C243....     MOV.B   #0x0, &display_line + 10
+     29            display_line[LINEONE][TENTH_CHARACTER] = RESET_STATE;
+   \   000022   C243....     MOV.B   #0x0, &display_line + 21
+     30            display_line[LINETWO][TENTH_CHARACTER] = RESET_STATE;
+   \   000026   C243....     MOV.B   #0x0, &display_line + 32
+     31            display_line[LINETHREE][TENTH_CHARACTER] = RESET_STATE;
+   \   00002A   C243....     MOV.B   #0x0, &display_line + 43
+     32          
+     33            display[LINEZERO] = &display_line[LINEZERO][LINEZERO];
+   \   00002E   B240........ MOV.W   #display_line, &display
+     34            display[LINEONE] = &display_line[LINEONE][LINEZERO];
+   \   000034   B240........ MOV.W   #display_line + 11, &display + 2
+     35            display[LINETWO] = &display_line[LINETWO][LINEZERO];
+   \   00003A   B240........ MOV.W   #display_line + 22, &display + 4
+     36            display[LINETHREE] = &display_line[LINETHREE][LINEZERO];
+   \   000040   B240........ MOV.W   #display_line + 33, &display + 6
+     37            update_display = RESET_STATE;
+   \   000046   C243....     MOV.B   #0x0, &update_display
+     38            update_display_count = RESET_STATE;
+   \   00004A   8243....     MOV.W   #0x0, &update_display_count
+     39          // Interrupts are disabled by default, enable them.
+     40            enable_interrupts();
+   \   00004E   ........     CALLA   #enable_interrupts
+     41          //------------------------------------------------------------------------------
+     42          }
+   \   000052   3A41         POP.W   R10
+   \   000054   1001         RETA
+
+   Maximum stack usage in bytes:
+
+   CSTACK Function
+   ------ --------
+      6   Init_Conditions
+        6   -> enable_interrupts
+
+
+   Segment part sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+      86  Init_Conditions
+
+ 
+ 86 bytes in segment CODE
+ 
+ 86 bytes of CODE memory
+
+Errors: none
+Warnings: none

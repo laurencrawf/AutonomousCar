@@ -1,0 +1,178 @@
+###############################################################################
+#
+# IAR C/C++ Compiler V7.12.3.989/W32 for MSP430           24/Apr/2020  12:34:17
+# Copyright 1996-2019 IAR Systems AB.
+# PC-locked license - IAR Embedded Workbench for MSP430, 8K KickStart Edition 7.12
+#
+#    __rt_version  =  3
+#    __double_size =  32
+#    __reg_r4      =  free
+#    __reg_r5      =  free
+#    __pic         =  no
+#    __core        =  430X
+#    __data_model  =  small
+#    __code_model  =  large
+#    Source file   =  
+#        C:\Users\laure\OneDrive\Documents\ECE_306_Code\Project 10 Code
+#        Submission\pwm.c
+#    Command line  =  
+#        -f C:\Users\laure\AppData\Local\Temp\EWED7B.tmp
+#        ("C:\Users\laure\OneDrive\Documents\ECE_306_Code\Project 10 Code
+#        Submission\pwm.c" -lC
+#        "C:\Users\laure\OneDrive\Documents\ECE_306_Code\Project 10 Code
+#        Submission\Debug\List" -o
+#        "C:\Users\laure\OneDrive\Documents\ECE_306_Code\Project 10 Code
+#        Submission\Debug\Obj" --no_cse --no_unroll --no_inline
+#        --no_code_motion --no_tbaa --debug -D__MSP430FR2355__ -e --double=32
+#        --dlib_config "C:\Program Files (x86)\IAR Systems\Embedded Workbench
+#        8.0\430\lib\dlib\dl430xlsfn.h" -I ./\ --core=430X --data_model=small
+#        -On --multiplier=32 --hw_workaround=CPU40 --code_model=large)
+#    Locale        =  English_USA.1252
+#    List file     =  
+#        C:\Users\laure\OneDrive\Documents\ECE_306_Code\Project 10 Code
+#        Submission\Debug\List\pwm.lst
+#    Object file   =  
+#        C:\Users\laure\OneDrive\Documents\ECE_306_Code\Project 10 Code
+#        Submission\Debug\Obj\pwm.r43
+#
+###############################################################################
+
+C:\Users\laure\OneDrive\Documents\ECE_306_Code\Project 10 Code Submission\pwm.c
+      1          //------------------------------------------------------------------------------
+      2          //
+      3          //  Description: This file contains the PWM code
+      4          //
+      5          //
+      6          //  Lauren Crawford
+      7          //  03/04/2020
+      8          //  Built with IAR Embedded Workbench Version: V4.10A/W32 (7.11.2)
+      9          //------------------------------------------------------------------------------
+     10          
+     11          #include  "functions.h"
+     12          #include  "msp430.h"
+
+   \                                 In  segment DATA16_AN, at 0x454
+   \   union <unnamed> _A_TB3CCR1_L
+   \                     _A_TB3CCR1_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x456
+   \   union <unnamed> _A_TB3CCR2_L
+   \                     _A_TB3CCR2_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x458
+   \   union <unnamed> _A_TB3CCR3_L
+   \                     _A_TB3CCR3_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x45a
+   \   union <unnamed> _A_TB3CCR4_L
+   \                     _A_TB3CCR4_L:
+   \   000000                DS8 2
+     13          #include <string.h>
+     14          #include "macros.h"
+     15          
+     16          //globals
+     17          extern volatile unsigned int ADC_Left_Detect;
+     18          extern volatile unsigned int ADC_Right_Detect;
+     19          
+     20          //functions
+     21          
+
+   \                                 In  segment CODE, align 2
+     22          void right_forward_pwm(int speed){
+   \                     right_forward_pwm:
+     23          //RIGHT_FORWARD_SPEED = WHEEL_OFF; // P6.0 Right Forward PWM OFF
+     24          RIGHT_FORWARD_SPEED = speed; // P6.0 Right Forward PWM ON amount
+   \   000000   824C5404     MOV.W   R12, &0x454
+     25          }
+   \   000004   1001         RETA
+   \   000006                REQUIRE _A_TB3CCR1_L
+     26          
+
+   \                                 In  segment CODE, align 2
+     27          void left_forward_pwm(int speed){
+   \                     left_forward_pwm:
+     28          //LEFT_FORWARD_SPEED = WHEEL_OFF; // P6.1 Left Forward PWM OFF
+     29          LEFT_FORWARD_SPEED = speed; // P6.1 Left Forward PWM ON amount
+   \   000000   824C5604     MOV.W   R12, &0x456
+     30          }
+   \   000004   1001         RETA
+   \   000006                REQUIRE _A_TB3CCR2_L
+     31          
+
+   \                                 In  segment CODE, align 2
+     32          void right_reverse_pwm(int speed){
+   \                     right_reverse_pwm:
+     33          //RIGHT_REVERSE_SPEED = WHEEL_OFF; // P6.2 Right Reverse PWM OFF
+     34          RIGHT_REVERSE_SPEED = speed; // P6.2 Right Reverse PWM ON amount
+   \   000000   824C5804     MOV.W   R12, &0x458
+     35          }
+   \   000004   1001         RETA
+   \   000006                REQUIRE _A_TB3CCR3_L
+     36          
+
+   \                                 In  segment CODE, align 2
+     37          void left_reverse_pwm(int speed){
+   \                     left_reverse_pwm:
+     38          //LEFT_REVERSE_SPEED = WHEEL_OFF; // P6.3 Left Reverse PWM OFF
+     39          LEFT_REVERSE_SPEED = speed; // P6.3 Left Reverse PWM ON amount
+   \   000000   824C5A04     MOV.W   R12, &0x45a
+     40          }
+   \   000004   1001         RETA
+   \   000006                REQUIRE _A_TB3CCR4_L
+     41          
+
+   \                                 In  segment CODE, align 2
+     42          void stop_wheels_pwm(void){
+   \                     stop_wheels_pwm:
+     43            RIGHT_FORWARD_SPEED = WHEEL_OFF;
+   \   000000   82435404     MOV.W   #0x0, &0x454
+     44            LEFT_FORWARD_SPEED = WHEEL_OFF;
+   \   000004   82435604     MOV.W   #0x0, &0x456
+     45            RIGHT_REVERSE_SPEED = WHEEL_OFF;
+   \   000008   82435804     MOV.W   #0x0, &0x458
+     46            LEFT_REVERSE_SPEED = WHEEL_OFF;
+   \   00000C   82435A04     MOV.W   #0x0, &0x45a
+     47          }
+   \   000010   1001         RETA
+   \   000012                REQUIRE _A_TB3CCR1_L
+   \   000012                REQUIRE _A_TB3CCR2_L
+   \   000012                REQUIRE _A_TB3CCR3_L
+   \   000012                REQUIRE _A_TB3CCR4_L
+
+   Maximum stack usage in bytes:
+
+   CSTACK Function
+   ------ --------
+      4   left_forward_pwm
+      4   left_reverse_pwm
+      4   right_forward_pwm
+      4   right_reverse_pwm
+      4   stop_wheels_pwm
+
+
+   Segment part sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       2  _A_TB3CCR1_L
+       2  _A_TB3CCR2_L
+       2  _A_TB3CCR3_L
+       2  _A_TB3CCR4_L
+       6  left_forward_pwm
+       6  left_reverse_pwm
+       6  right_forward_pwm
+       6  right_reverse_pwm
+      18  stop_wheels_pwm
+
+ 
+ 42 bytes in segment CODE
+  8 bytes in segment DATA16_AN
+ 
+ 42 bytes of CODE memory
+  0 bytes of DATA memory (+ 8 bytes shared)
+
+Errors: none
+Warnings: none

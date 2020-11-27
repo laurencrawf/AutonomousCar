@@ -1,0 +1,637 @@
+###############################################################################
+#
+# IAR C/C++ Compiler V7.12.3.989/W32 for MSP430           24/Apr/2020  12:34:17
+# Copyright 1996-2019 IAR Systems AB.
+# PC-locked license - IAR Embedded Workbench for MSP430, 8K KickStart Edition 7.12
+#
+#    __rt_version  =  3
+#    __double_size =  32
+#    __reg_r4      =  free
+#    __reg_r5      =  free
+#    __pic         =  no
+#    __core        =  430X
+#    __data_model  =  small
+#    __code_model  =  large
+#    Source file   =  
+#        C:\Users\laure\OneDrive\Documents\ECE_306_Code\Project 10 Code
+#        Submission\interrupts_serial.c
+#    Command line  =  
+#        -f C:\Users\laure\AppData\Local\Temp\EWECAB.tmp
+#        ("C:\Users\laure\OneDrive\Documents\ECE_306_Code\Project 10 Code
+#        Submission\interrupts_serial.c" -lC
+#        "C:\Users\laure\OneDrive\Documents\ECE_306_Code\Project 10 Code
+#        Submission\Debug\List" -o
+#        "C:\Users\laure\OneDrive\Documents\ECE_306_Code\Project 10 Code
+#        Submission\Debug\Obj" --no_cse --no_unroll --no_inline
+#        --no_code_motion --no_tbaa --debug -D__MSP430FR2355__ -e --double=32
+#        --dlib_config "C:\Program Files (x86)\IAR Systems\Embedded Workbench
+#        8.0\430\lib\dlib\dl430xlsfn.h" -I ./\ --core=430X --data_model=small
+#        -On --multiplier=32 --hw_workaround=CPU40 --code_model=large)
+#    Locale        =  English_USA.1252
+#    List file     =  
+#        C:\Users\laure\OneDrive\Documents\ECE_306_Code\Project 10 Code
+#        Submission\Debug\List\interrupts_serial.lst
+#    Object file   =  
+#        C:\Users\laure\OneDrive\Documents\ECE_306_Code\Project 10 Code
+#        Submission\Debug\Obj\interrupts_serial.r43
+#
+###############################################################################
+
+C:\Users\laure\OneDrive\Documents\ECE_306_Code\Project 10 Code Submission\interrupts_serial.c
+      1          #include  "functions.h"
+      2          #include  "msp430.h"
+
+   \                                 In  segment DATA16_AN, at 0x50c
+   \   union <unnamed> _A_UCA0RXBUF_L
+   \                     _A_UCA0RXBUF_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x50e
+   \   union <unnamed> _A_UCA0TXBUF_L
+   \                     _A_UCA0TXBUF_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x51a
+   \   union <unnamed> _A_UCA0IE_L
+   \                     _A_UCA0IE_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x51e
+   \   union <unnamed> _A_UCA0IV_L
+   \                     _A_UCA0IV_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x58c
+   \   union <unnamed> _A_UCA1RXBUF_L
+   \                     _A_UCA1RXBUF_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x58e
+   \   union <unnamed> _A_UCA1TXBUF_L
+   \                     _A_UCA1TXBUF_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x59a
+   \   union <unnamed> _A_UCA1IE_L
+   \                     _A_UCA1IE_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x59e
+   \   union <unnamed> _A_UCA1IV_L
+   \                     _A_UCA1IV_L:
+   \   000000                DS8 2
+      3          #include <string.h>
+      4          #include "macros.h"
+      5          
+      6          // global variables
+      7          extern volatile unsigned int usb_rx_ring_wr;
+      8          extern volatile char USB_Char_Rx[SMALL_RING_SIZE] ; //this is the ring buffer
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+      9          volatile unsigned int UCA0_index;
+   \                     UCA0_index:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     10          volatile unsigned int UCA1_index;
+   \                     UCA1_index:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 1, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     11          char test_command[SMALL_RING_SIZE] ;
+   \                     test_command:
+   \   000000                DS8 32
+     12          
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     13          extern int j,done;int i;
+   \                     i:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     14          int temp2;
+   \                     temp2:
+   \   000000                DS8 2
+     15          extern char processbuffer[ARR2][PBSIZE];
+     16          extern char newchar;
+     17          extern unsigned int usb_rx_ring_rd;
+     18          
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     19          volatile unsigned int iot_rx_ring_wr;
+   \                     iot_rx_ring_wr:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 1, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     20          volatile char IOT_Char_Rx[SMALL_RING_SIZE] ; //this is the ring buffer
+   \                     IOT_Char_Rx:
+   \   000000                DS8 32
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     21          unsigned int iot_rx_ring_rd;
+   \                     iot_rx_ring_rd:
+   \   000000                DS8 2
+     22          extern int pcflag;
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     23          int carrot = FALSE;
+   \                     carrot:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 1, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     24          char newbuffer[ARR2][PBSIZE];
+   \                     newbuffer:
+   \   000000                DS8 64
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     25          int a = RESET_STATE; int b =RESET_STATE; 
+   \                     `a`:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+   \                     `b`:
+   \   000000                DS8 2
+     26          extern volatile unsigned int serial_counter;
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     27          int iot_flag;
+   \                     iot_flag:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     28          int state_machine = RESET_STATE;
+   \                     state_machine:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     29          int current_char, index_ip;
+   \                     current_char:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+   \                     index_ip:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 1, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     30          char ipaddr[ipsize];
+   \                     ipaddr:
+   \   000000                DS8 15
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     31          int check = RESET_STATE;
+   \                     check:
+   \   000000                DS8 2
+     32          //------------------------------------------------------------------------------
+     33          #pragma vector=EUSCI_A0_VECTOR
+
+   \                                 In  segment ISR_CODE, align 2
+     34          __interrupt void eUSCI_A0_ISR(void){
+   \                     eUSCI_A0_ISR:
+   \   000000   3F15         PUSHM.W #0x4, R15
+     35          unsigned int temp;
+     36          switch(__even_in_range(UCA0IV,range)){
+   \   000002   1F421E05     MOV.W   &0x51e, R15
+   \   000006   E00F         ADDA    R15, PC
+   \                     `?<Jumptable for eUSCI_A0_ISR>_0`:
+   \   000008   E53C         JMP     ??eUSCI_A0_ISR_7
+   \   00000A   033C         JMP     ??eUSCI_A0_ISR_24
+   \   00000C   D13C         JMP     ??eUSCI_A0_ISR_25
+   \   00000E   E23C         JMP     ??eUSCI_A0_ISR_7
+   \   000010   E13C         JMP     ??eUSCI_A0_ISR_7
+     37          case NOINT: // Vector 0 - no interrupt
+     38          break;
+     39          case VRXIFG: // Vector 2 - RXIFG
+     40          temp = iot_rx_ring_wr++;
+   \                     ??eUSCI_A0_ISR_24:
+   \   000012   1F42....     MOV.W   &iot_rx_ring_wr, R15
+   \   000016   0D4F         MOV.W   R15, R13
+   \   000018   1D53         ADD.W   #0x1, R13
+   \   00001A   824D....     MOV.W   R13, &iot_rx_ring_wr
+   \   00001E   0E4F         MOV.W   R15, R14
+     41          temp2 = UCA0RXBUF;
+   \   000020   92420C05.... MOV.W   &0x50c, &temp2
+     42          IOT_Char_Rx[temp] = temp2; // RX -> USB_Char_Rx character
+   \   000026   DE42........ MOV.B   &temp2, IOT_Char_Rx(R14)
+     43          if (iot_rx_ring_wr >= (sizeof(IOT_Char_Rx))){
+   \   00002C   B2902000.... CMP.W   #0x20, &iot_rx_ring_wr
+   \   000032   0228         JNC     ??eUSCI_A0_ISR_0
+     44          iot_rx_ring_wr = BEGINNING; // Circular buffer back to beginning
+   \   000034   8243....     MOV.W   #0x0, &iot_rx_ring_wr
+     45          }
+     46          
+     47          // move this
+     48          // if (iot_rx_. . . != iot_rx_ ... ) 
+     49           while(iot_rx_ring_rd != iot_rx_ring_wr){
+   \                     ??eUSCI_A0_ISR_0:
+   \   000038   9292........ CMP.W   &iot_rx_ring_wr, &iot_rx_ring_rd
+   \   00003E   2F24         JEQ     ??eUSCI_A0_ISR_8
+     50                processbuffer[i][j++] = IOT_Char_Rx[iot_rx_ring_rd++];
+   \   000040   1F42....     MOV.W   &iot_rx_ring_rd, R15
+   \   000044   5F4F....     MOV.B   IOT_Char_Rx(R15), R15
+   \   000048   9253....     ADD.W   #0x1, &iot_rx_ring_rd
+   \   00004C   1D42....     MOV.W   &i, R13
+   \   000050   5D0E         RLAM.W  #0x4, R13
+   \   000052   5D02         RLAM.W  #0x1, R13
+   \   000054   1D52....     ADD.W   &j, R13
+   \   000058   CD4F....     MOV.B   R15, processbuffer(R13)
+   \   00005C   9253....     ADD.W   #0x1, &j
+     51                if(iot_rx_ring_rd >= sizeof(IOT_Char_Rx)){
+   \   000060   B2902000.... CMP.W   #0x20, &iot_rx_ring_rd
+   \   000066   0228         JNC     ??eUSCI_A0_ISR_9
+     52                  iot_rx_ring_rd = RESET_STATE;
+   \   000068   8243....     MOV.W   #0x0, &iot_rx_ring_rd
+     53                }
+     54                if(j >= sizeof(processbuffer)){
+   \                     ??eUSCI_A0_ISR_9:
+   \   00006C   B2904000.... CMP.W   #0x40, &j
+   \   000072   0228         JNC     ??eUSCI_A0_ISR_10
+     55                  j = RESET_STATE;
+   \   000074   8243....     MOV.W   #0x0, &j
+     56                }
+     57                if(processbuffer[i][j] == LF){
+   \                     ??eUSCI_A0_ISR_10:
+   \   000078   1F42....     MOV.W   &i, R15
+   \   00007C   5F0E         RLAM.W  #0x4, R15
+   \   00007E   5F02         RLAM.W  #0x1, R15
+   \   000080   1F52....     ADD.W   &j, R15
+   \   000084   FF900A00.... CMP.B   #0xa, processbuffer(R15)
+   \   00008A   D623         JNE     ??eUSCI_A0_ISR_0
+     58                  i++;
+   \   00008C   9253....     ADD.W   #0x1, &i
+     59                  if(i >= SMALL_RING_SIZE){
+   \   000090   B2902000.... CMP.W   #0x20, &i
+   \   000096   D03B         JL      ??eUSCI_A0_ISR_0
+     60                    i = RESET_STATE;
+   \   000098   8243....     MOV.W   #0x0, &i
+   \   00009C   CD3F         JMP     ??eUSCI_A0_ISR_0
+     61                  }
+     62              }
+     63           }
+     64          //end move this
+     65           
+     66             UCA1TXBUF = temp2;
+   \                     ??eUSCI_A0_ISR_8:
+   \   00009E   9242....8E05 MOV.W   &temp2, &0x58e
+     67          //current char is whats equal to UCA0RXBUF
+     68          current_char = UCA0RXBUF;
+   \   0000A4   92420C05.... MOV.W   &0x50c, &current_char
+     69          switch(state_machine){
+   \   0000AA   1F42....     MOV.W   &state_machine, R15
+   \   0000AE   0F83         SUB.W   #0x0, R15
+   \   0000B0   0524         JEQ     ??eUSCI_A0_ISR_11
+   \   0000B2   1F83         SUB.W   #0x1, R15
+   \   0000B4   0D24         JEQ     ??eUSCI_A0_ISR_12
+   \   0000B6   1F83         SUB.W   #0x1, R15
+   \   0000B8   1524         JEQ     ??eUSCI_A0_ISR_13
+   \   0000BA   233C         JMP     ??eUSCI_A0_ISR_6
+     70          case WAITING:
+     71            if(current_char == 'r'){
+   \                     ??eUSCI_A0_ISR_11:
+   \   0000BC   B2907200.... CMP.W   #0x72, &current_char
+   \   0000C2   0320         JNE     ??eUSCI_A0_ISR_14
+     72              state_machine = IPBEGIN;
+   \   0000C4   9243....     MOV.W   #0x1, &state_machine
+   \   0000C8   1C3C         JMP     ??eUSCI_A0_ISR_6
+     73            }
+     74            else{
+     75              state_machine = WAITING;
+   \                     ??eUSCI_A0_ISR_14:
+   \   0000CA   8243....     MOV.W   #0x0, &state_machine
+     76            }
+     77            break;
+   \   0000CE   193C         JMP     ??eUSCI_A0_ISR_6
+     78          case IPBEGIN:
+     79            if(current_char == '='){
+   \                     ??eUSCI_A0_ISR_12:
+   \   0000D0   B2903D00.... CMP.W   #0x3d, &current_char
+   \   0000D6   0320         JNE     ??eUSCI_A0_ISR_15
+     80              state_machine = GETIP;
+   \   0000D8   A243....     MOV.W   #0x2, &state_machine
+   \   0000DC   123C         JMP     ??eUSCI_A0_ISR_6
+     81            }
+     82            else{
+     83              state_machine = WAITING;
+   \                     ??eUSCI_A0_ISR_15:
+   \   0000DE   8243....     MOV.W   #0x0, &state_machine
+     84            }
+     85            break;
+   \   0000E2   0F3C         JMP     ??eUSCI_A0_ISR_6
+     86          case GETIP:
+     87            ipaddr[index_ip] = current_char;
+   \                     ??eUSCI_A0_ISR_13:
+   \   0000E4   1F42....     MOV.W   &index_ip, R15
+   \   0000E8   DF42........ MOV.B   &current_char, ipaddr(R15)
+     88            index_ip++;
+   \   0000EE   9253....     ADD.W   #0x1, &index_ip
+     89            if(current_char == ' '){
+   \   0000F2   B2902000.... CMP.W   #0x20, &current_char
+   \   0000F8   0420         JNE     ??eUSCI_A0_ISR_6
+     90              index_ip = RESET_STATE;
+   \   0000FA   8243....     MOV.W   #0x0, &index_ip
+     91              state_machine = RESET_STATE;
+   \   0000FE   8243....     MOV.W   #0x0, &state_machine
+     92            }
+     93            break;
+     94          default: break;
+     95          }
+     96            
+     97            
+     98          
+     99          
+    100            if(carrot){
+   \                     ??eUSCI_A0_ISR_6:
+   \   000102   8293....     CMP.W   #0x0, &carrot
+   \   000106   4724         JEQ     ??eUSCI_A0_ISR_16
+    101            newbuffer[b][a] = temp2;
+   \   000108   1F42....     MOV.W   &`b`, R15
+   \   00010C   5F0E         RLAM.W  #0x4, R15
+   \   00010E   5F02         RLAM.W  #0x1, R15
+   \   000110   1F52....     ADD.W   &`a`, R15
+   \   000114   DF42........ MOV.B   &temp2, newbuffer(R15)
+    102              a++;
+   \   00011A   9253....     ADD.W   #0x1, &`a`
+    103            if(newbuffer[RESET_STATE][a] == '\r'){
+   \   00011E   1F42....     MOV.W   &`a`, R15
+   \   000122   FF900D00.... CMP.B   #0xd, newbuffer(R15)
+   \   000128   0420         JNE     ??eUSCI_A0_ISR_17
+    104              //set flag and actually run command in main 
+    105              iot_flag = TRUE;
+   \   00012A   9243....     MOV.W   #0x1, &iot_flag
+    106              carrot = FALSE;
+   \   00012E   8243....     MOV.W   #0x0, &carrot
+    107            } 
+    108                if(temp2 == '^'){
+   \                     ??eUSCI_A0_ISR_17:
+   \   000132   B2905E00.... CMP.W   #0x5e, &temp2
+   \   000138   1E20         JNE     ??eUSCI_A0_ISR_18
+    109                 b = TRUE;
+   \   00013A   9243....     MOV.W   #0x1, &`b`
+    110                 a = RESET_STATE;
+   \   00013E   8243....     MOV.W   #0x0, &`a`
+    111                 if(check > RESET_STATE){
+   \   000142   9293....     CMP.W   #0x1, &check
+   \   000146   1538         JL      ??eUSCI_A0_ISR_19
+    112                 newbuffer[b][a] = temp2;
+   \   000148   1F42....     MOV.W   &`b`, R15
+   \   00014C   5F0E         RLAM.W  #0x4, R15
+   \   00014E   5F02         RLAM.W  #0x1, R15
+   \   000150   1F52....     ADD.W   &`a`, R15
+   \   000154   DF42........ MOV.B   &temp2, newbuffer(R15)
+    113                 if(a == COMDONE){
+   \   00015A   B2900900.... CMP.W   #0x9, &`a`
+   \   000160   0620         JNE     ??eUSCI_A0_ISR_20
+    114                   //see above 
+    115                    b=RESET_STATE;
+   \   000162   8243....     MOV.W   #0x0, &`b`
+    116                    iot_flag = GETIP;
+   \   000166   A243....     MOV.W   #0x2, &iot_flag
+    117                    carrot = FALSE;
+   \   00016A   8243....     MOV.W   #0x0, &carrot
+    118                 } 
+    119                 a++;
+   \                     ??eUSCI_A0_ISR_20:
+   \   00016E   9253....     ADD.W   #0x1, &`a`
+    120               /*  if( a == 9){
+    121                   carrot = FALSE;
+    122                 } */
+    123                 }
+    124                 check++;
+   \                     ??eUSCI_A0_ISR_19:
+   \   000172   9253....     ADD.W   #0x1, &check
+    125                }
+    126            if( a == COMDONE ){
+   \                     ??eUSCI_A0_ISR_18:
+   \   000176   B2900900.... CMP.W   #0x9, &`a`
+   \   00017C   0C20         JNE     ??eUSCI_A0_ISR_16
+    127              if( b == TRUE){
+   \   00017E   9293....     CMP.W   #0x1, &`b`
+   \   000182   0220         JNE     ??eUSCI_A0_ISR_21
+    128                iot_flag = GETIP;
+   \   000184   A243....     MOV.W   #0x2, &iot_flag
+    129              }
+    130              if ( b == RESET_STATE){
+   \                     ??eUSCI_A0_ISR_21:
+   \   000188   8293....     CMP.W   #0x0, &`b`
+   \   00018C   0220         JNE     ??eUSCI_A0_ISR_22
+    131              iot_flag = TRUE;
+   \   00018E   9243....     MOV.W   #0x1, &iot_flag
+    132              }
+    133              carrot = FALSE;
+   \                     ??eUSCI_A0_ISR_22:
+   \   000192   8243....     MOV.W   #0x0, &carrot
+    134            } 
+    135          } 
+    136            
+    137            if(temp2 == CR){
+   \                     ??eUSCI_A0_ISR_16:
+   \   000196   B2900D00.... CMP.W   #0xd, &temp2
+   \   00019C   0220         JNE     ??eUSCI_A0_ISR_23
+    138              carrot = FALSE;
+   \   00019E   8243....     MOV.W   #0x0, &carrot
+    139            } 
+    140            if(temp2 == '^'){
+   \                     ??eUSCI_A0_ISR_23:
+   \   0001A2   B2905E00.... CMP.W   #0x5e, &temp2
+   \   0001A8   1520         JNE     ??eUSCI_A0_ISR_7
+    141              carrot = TRUE;
+   \   0001AA   9243....     MOV.W   #0x1, &carrot
+    142            } 
+    143              
+    144          //make a new if statement thatll say if it equal new line you put it on the display
+    145          break;
+   \   0001AE   123C         JMP     ??eUSCI_A0_ISR_7
+    146          case VTXIFG: // Vector 4 – TXIFG
+    147          UCA0TXBUF = test_command[UCA0_index++];
+   \                     ??eUSCI_A0_ISR_25:
+   \   0001B0   1F42....     MOV.W   &UCA0_index, R15
+   \   0001B4   0D4F         MOV.W   R15, R13
+   \   0001B6   1D53         ADD.W   #0x1, R13
+   \   0001B8   824D....     MOV.W   R13, &UCA0_index
+   \   0001BC   5F4F....     MOV.B   test_command(R15), R15
+   \   0001C0   4F4F         MOV.B   R15, R15
+   \   0001C2   824F0E05     MOV.W   R15, &0x50e
+    148          if (test_command[UCA0_index] == NULL){
+   \   0001C6   1F42....     MOV.W   &UCA0_index, R15
+   \   0001CA   CF93....     CMP.B   #0x0, test_command(R15)
+   \   0001CE   0220         JNE     ??eUSCI_A0_ISR_7
+    149          UCA0IE &= ~UCTXIE;
+   \   0001D0   A2C31A05     BIC.W   #0x2, &0x51a
+    150          }
+    151          break;
+    152          //---------------------
+    153          break;
+    154          default: break;
+    155          }
+    156          }
+   \                     ??eUSCI_A0_ISR_7:
+   \   0001D4   3C17         POPM.W  #0x4, R15
+   \   0001D6   0013         RETI
+   \   0001D8                REQUIRE _A_UCA0RXBUF_L
+   \   0001D8                REQUIRE _A_UCA1TXBUF_L
+   \   0001D8                REQUIRE _A_UCA0TXBUF_L
+   \   0001D8                REQUIRE _A_UCA0IE_L
+   \   0001D8                REQUIRE _A_UCA0IV_L
+    157          //------------------------------------------------------------------------------
+    158          
+    159          //------------------------------------------------------------------------------
+    160          #pragma vector=EUSCI_A1_VECTOR
+
+   \                                 In  segment ISR_CODE, align 2
+    161          __interrupt void eUSCI_A1_ISR(void){
+   \                     eUSCI_A1_ISR:
+   \   000000   2F15         PUSHM.W #0x3, R15
+    162          unsigned int temp;
+    163          switch(__even_in_range(UCA1IV,range)){
+   \   000002   1F429E05     MOV.W   &0x59e, R15
+   \   000006   E00F         ADDA    R15, PC
+   \                     `?<Jumptable for eUSCI_A1_ISR>_0`:
+   \   000008   303C         JMP     ??eUSCI_A1_ISR_1
+   \   00000A   033C         JMP     ??eUSCI_A1_ISR_3
+   \   00000C   1C3C         JMP     ??eUSCI_A1_ISR_4
+   \   00000E   2D3C         JMP     ??eUSCI_A1_ISR_1
+   \   000010   2C3C         JMP     ??eUSCI_A1_ISR_1
+    164          case NOINT: // Vector 0 - no interrupt
+    165          break;
+    166          case VRXIFG: // Vector 2 - RXIFG
+    167          
+    168          temp = usb_rx_ring_wr++;
+   \                     ??eUSCI_A1_ISR_3:
+   \   000012   1F42....     MOV.W   &usb_rx_ring_wr, R15
+   \   000016   0E4F         MOV.W   R15, R14
+   \   000018   1E53         ADD.W   #0x1, R14
+   \   00001A   824E....     MOV.W   R14, &usb_rx_ring_wr
+   \   00001E   0D4F         MOV.W   R15, R13
+    169          USB_Char_Rx[temp] = UCA1RXBUF; // RX -> USB_Char_Rx character
+   \   000020   1E428C05     MOV.W   &0x58c, R14
+   \   000024   CD4E....     MOV.B   R14, USB_Char_Rx(R13)
+    170          if (usb_rx_ring_wr >= (sizeof(USB_Char_Rx))){
+   \   000028   B2902000.... CMP.W   #0x20, &usb_rx_ring_wr
+   \   00002E   0228         JNC     ??eUSCI_A1_ISR_2
+    171          usb_rx_ring_wr = BEGINNING; // Circular buffer back to beginning
+   \   000030   8243....     MOV.W   #0x0, &usb_rx_ring_wr
+    172          }
+    173          
+    174          temp2 = UCA1RXBUF;
+   \                     ??eUSCI_A1_ISR_2:
+   \   000034   92428C05.... MOV.W   &0x58c, &temp2
+    175          UCA0TXBUF = temp2;
+   \   00003A   9242....0E05 MOV.W   &temp2, &0x50e
+    176          pcflag=TRUE;
+   \   000040   9243....     MOV.W   #0x1, &pcflag
+    177          
+    178          break;
+   \   000044   123C         JMP     ??eUSCI_A1_ISR_1
+    179          case VTXIFG: // Vector 4 – TXIFG
+    180          UCA1TXBUF = test_command[UCA1_index++];
+   \                     ??eUSCI_A1_ISR_4:
+   \   000046   1F42....     MOV.W   &UCA1_index, R15
+   \   00004A   0E4F         MOV.W   R15, R14
+   \   00004C   1E53         ADD.W   #0x1, R14
+   \   00004E   824E....     MOV.W   R14, &UCA1_index
+   \   000052   5F4F....     MOV.B   test_command(R15), R15
+   \   000056   4F4F         MOV.B   R15, R15
+   \   000058   824F8E05     MOV.W   R15, &0x58e
+    181          if (test_command[UCA1_index] == NULL){
+   \   00005C   1F42....     MOV.W   &UCA1_index, R15
+   \   000060   CF93....     CMP.B   #0x0, test_command(R15)
+   \   000064   0220         JNE     ??eUSCI_A1_ISR_1
+    182          UCA1IE &= ~UCTXIE;
+   \   000066   A2C39A05     BIC.W   #0x2, &0x59a
+    183          }
+    184           break;
+    185          //---------------------
+    186          break;
+    187          default: break;
+    188          }
+    189          } 
+   \                     ??eUSCI_A1_ISR_1:
+   \   00006A   2D17         POPM.W  #0x3, R15
+   \   00006C   0013         RETI
+   \   00006E                REQUIRE _A_UCA1RXBUF_L
+   \   00006E                REQUIRE _A_UCA0TXBUF_L
+   \   00006E                REQUIRE _A_UCA1TXBUF_L
+   \   00006E                REQUIRE _A_UCA1IE_L
+   \   00006E                REQUIRE _A_UCA1IV_L
+
+   \                                 In  segment INTVEC, offset 0x40, root
+   \                     `??eUSCI_A1_ISR::??INTVEC 64`:
+   \   000040   ....         DC16    eUSCI_A1_ISR
+
+   \                                 In  segment INTVEC, offset 0x42, root
+   \                     `??eUSCI_A0_ISR::??INTVEC 66`:
+   \   000042   ....         DC16    eUSCI_A0_ISR
+    190          //------------------------------------------------------------------------------
+
+   Maximum stack usage in bytes:
+
+   CSTACK Function
+   ------ --------
+     12   eUSCI_A0_ISR
+     10   eUSCI_A1_ISR
+
+
+   Segment part sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+      32  IOT_Char_Rx
+       2  UCA0_index
+       2  UCA1_index
+       2  _A_UCA0IE_L
+       2  _A_UCA0IV_L
+       2  _A_UCA0RXBUF_L
+       2  _A_UCA0TXBUF_L
+       2  _A_UCA1IE_L
+       2  _A_UCA1IV_L
+       2  _A_UCA1RXBUF_L
+       2  _A_UCA1TXBUF_L
+       2  a
+       2  b
+       2  carrot
+       2  check
+       2  current_char
+     472  eUSCI_A0_ISR
+       2  eUSCI_A0_ISR::??INTVEC 66
+     110  eUSCI_A1_ISR
+       2  eUSCI_A1_ISR::??INTVEC 64
+       2  i
+       2  index_ip
+       2  iot_flag
+       2  iot_rx_ring_rd
+       2  iot_rx_ring_wr
+      15  ipaddr
+      64  newbuffer
+       2  state_machine
+       2  temp2
+      32  test_command
+
+ 
+  16 bytes in segment DATA16_AN
+ 171 bytes in segment DATA16_Z
+   4 bytes in segment INTVEC
+ 582 bytes in segment ISR_CODE
+ 
+ 582 bytes of CODE  memory
+   0 bytes of CONST memory (+  4 bytes shared)
+ 171 bytes of DATA  memory (+ 16 bytes shared)
+
+Errors: none
+Warnings: none

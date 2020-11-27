@@ -1,0 +1,882 @@
+###############################################################################
+#
+# IAR C/C++ Compiler V7.12.3.989/W32 for MSP430           24/Apr/2020  12:34:28
+# Copyright 1996-2019 IAR Systems AB.
+# PC-locked license - IAR Embedded Workbench for MSP430, 8K KickStart Edition 7.12
+#
+#    __rt_version  =  3
+#    __double_size =  32
+#    __reg_r4      =  free
+#    __reg_r5      =  free
+#    __pic         =  no
+#    __core        =  430X
+#    __data_model  =  small
+#    __code_model  =  large
+#    Source file   =  
+#        C:\Users\laure\OneDrive\Documents\ECE_306_Code\Project 10 Code
+#        Submission\main.c
+#    Command line  =  
+#        -f C:\Users\laure\AppData\Local\Temp\EW1695.tmp
+#        ("C:\Users\laure\OneDrive\Documents\ECE_306_Code\Project 10 Code
+#        Submission\main.c" -lC
+#        "C:\Users\laure\OneDrive\Documents\ECE_306_Code\Project 10 Code
+#        Submission\Debug\List" -o
+#        "C:\Users\laure\OneDrive\Documents\ECE_306_Code\Project 10 Code
+#        Submission\Debug\Obj" --no_cse --no_unroll --no_inline
+#        --no_code_motion --no_tbaa --debug -D__MSP430FR2355__ -e --double=32
+#        --dlib_config "C:\Program Files (x86)\IAR Systems\Embedded Workbench
+#        8.0\430\lib\dlib\dl430xlsfn.h" -I ./\ --core=430X --data_model=small
+#        -On --multiplier=32 --hw_workaround=CPU40 --code_model=large)
+#    Locale        =  English_USA.1252
+#    List file     =  
+#        C:\Users\laure\OneDrive\Documents\ECE_306_Code\Project 10 Code
+#        Submission\Debug\List\main.lst
+#    Object file   =  
+#        C:\Users\laure\OneDrive\Documents\ECE_306_Code\Project 10 Code
+#        Submission\Debug\Obj\main.r43
+#
+###############################################################################
+
+C:\Users\laure\OneDrive\Documents\ECE_306_Code\Project 10 Code Submission\main.c
+      1          //------------------------------------------------------------------------------
+      2          //
+      3          //  Description: This file contains the Main Routine - "While" Operating System
+      4          //
+      5          //
+      6          //  Jim Carlson
+      7          //  Jan 2018
+      8          //  Built with IAR Embedded Workbench Version: V4.10A/W32 (7.11.2)
+      9          //------------------------------------------------------------------------------
+     10          
+     11          //------------------------------------------------------------------------------
+     12          #include  "functions.h"
+     13          #include  "msp430.h"
+
+   \                                 In  segment DATA16_AN, at 0x222
+   \   union <unnamed> _A_PBOUT_L
+   \                     _A_PBOUT_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x242
+   \   union <unnamed> _A_PCOUT_L
+   \                     _A_PCOUT_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x51a
+   \   union <unnamed> _A_UCA0IE_L
+   \                     _A_UCA0IE_L:
+   \   000000                DS8 2
+     14          #include <string.h>
+     15          #include "macros.h"
+     16          
+     17            // Global Variables
+
+   \                                 In  segment DATA16_Z, align 1, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     18          volatile char slow_input_down;
+   \                     slow_input_down:
+   \   000000                DS8 1
+     19          extern char display_line[HEIGHTFOUR][ELEVENTH_CHARACTER];
+     20          extern char *display[HEIGHTFOUR];
+
+   \                                 In  segment DATA16_Z, align 1, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     21          unsigned char display_mode;
+   \                     display_mode:
+   \   000000                DS8 1
+     22          extern volatile unsigned char display_changed;
+     23          extern volatile unsigned char update_display;
+     24          extern volatile unsigned int update_display_count;
+     25          //extern volatile unsigned int Time_Sequence;
+     26          //extern volatile char one_time;
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     27          unsigned int test_value;
+   \                     test_value:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 1, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     28          char chosen_direction;
+   \                     chosen_direction:
+   \   000000                DS8 1
+
+   \                                 In  segment DATA16_Z, align 1, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     29          char change;
+   \                     change:
+   \   000000                DS8 1
+     30          
+     31          extern volatile unsigned int display_counter;
+     32          extern volatile unsigned int status_counter; 
+     33          
+     34          extern volatile unsigned int SW2_pressed;
+     35          extern volatile unsigned int SW1_pressed;
+     36          
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     37          volatile unsigned int ADC_Thumb;
+   \                     ADC_Thumb:
+   \   000000                DS8 2
+     38          extern volatile unsigned int ADC_Left_Detect;
+     39          extern volatile unsigned int ADC_Right_Detect;
+     40          
+     41          extern volatile unsigned int UCA0_index;
+     42          extern volatile unsigned int UCA1_index;
+     43          extern char test_command[SMALL_RING_SIZE] ;
+     44          
+
+   \                                 In  segment DATA16_Z, align 1, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     45          char processbuffer[ARR2][PBSIZE];
+   \                     processbuffer:
+   \   000000                DS8 64
+
+   \                                 In  segment DATA16_Z, align 1, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     46          char newchar;
+   \                     newchar:
+   \   000000                DS8 1
+     47          //int i = RESET_STATE,
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     48          int j;
+   \                     j:
+   \   000000                DS8 2
+     49          extern volatile char USB_Char_Rx[SMALL_RING_SIZE];
+     50          extern volatile unsigned int usb_rx_ring_wr;
+     51          extern unsigned int usb_tx_ring_rd;
+     52          extern unsigned int usb_rx_ring_rd;
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     53          int arr;
+   \                     arr:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     54          int done;
+   \                     done:
+   \   000000                DS8 2
+     55          extern volatile unsigned int transmitflag;
+     56          extern volatile unsigned int serial_counter;
+     57          extern volatile unsigned int IOT_counter;
+     58          extern int iot_flag;
+     59          extern char newbuffer[ARR2][PBSIZE];
+     60          extern int b;
+     61          extern int a;
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     62          int c = RESET_STATE;
+   \                     c:
+   \   000000                DS8 2
+     63          extern char ipaddr[ipsize];
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     64          int height = FALSE;
+   \                     height:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_I, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_copy
+     65          int display_flag = TRUE;
+   \                     display_flag:
+   \   000000                DS8 2
+   \   000002                REQUIRE `?<Initializer for display_flag>`
+     66          extern volatile unsigned int project7_counter;
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     67          int onnumber = FALSE;
+   \                     onnumber:
+   \   000000                DS8 2
+     68          extern volatile unsigned int num8_counter;
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     69          int blacklinenavflag = RESET_STATE;
+   \                     blacklinenavflag:
+   \   000000                DS8 2
+     70          
+
+   \                                 In  segment CODE, align 2
+     71          void main(void){
+   \                     main:
+     72          //------------------------------------------------------------------------------
+     73          // Main Program
+     74          // This is the main routine for the program. Execution of code starts here.
+     75          // The operating system is Back Ground Fore Ground.
+     76          //
+     77          //------------------------------------------------------------------------------
+     78          // Disable the GPIO power-on default high-impedance mode to activate
+     79          // previously configured port settings
+     80          
+     81            Init_Ports();                        // Initialize Ports
+   \   000000   ........     CALLA   #Init_Ports
+     82            Init_Clocks();                       // Initialize Clock System
+   \   000004   ........     CALLA   #Init_Clocks
+     83            Init_Conditions();                   // Initialize Variables and Initial Conditions
+   \   000008   ........     CALLA   #Init_Conditions
+     84            Init_Timers();                       // Initialize Timers
+   \   00000C   ........     CALLA   #Init_Timers
+     85            Init_LCD();                          // Initialize LCD  
+   \   000010   ........     CALLA   #Init_LCD
+     86            Init_ADC();
+   \   000014   ........     CALLA   #Init_ADC
+     87            
+     88          
+     89                Init_Serial_UCA0(FALSE);
+   \   000018   0C43         MOV.W   #0x0, R12
+   \   00001A   ........     CALLA   #Init_Serial_UCA0
+     90                Init_Serial_UCA1();
+   \   00001E   ........     CALLA   #Init_Serial_UCA1
+     91                strcpy(display_line[LINEZERO], " Waiting  ");
+   \   000022   3D40....     MOV.W   #`?<Constant " Waiting  ">`, R13
+   \   000026   3C40....     MOV.W   #display_line, R12
+   \   00002A   ........     CALLA   #strcpy
+     92                update_string(display_line[LINEZERO], LINEZERO);
+   \   00002E   0D43         MOV.W   #0x0, R13
+   \   000030   ........     CALLA   #update_string
+     93                enable_display_update();
+   \   000034   ........     CALLA   #enable_display_update
+     94             
+     95                
+     96                while (IOT_counter < ResetTime){
+   \                     ??main_0:
+   \   000038   B2900300.... CMP.W   #0x3, &IOT_counter
+   \   00003E   032C         JC      ??main_12
+     97                  P5OUT &= ~IOT_RESET;
+   \   000040   D2C34202     BIC.B   #0x1, &0x242
+   \   000044   F93F         JMP     ??main_0
+     98                }
+     99                if(IOT_counter >= ResetTime){
+   \                     ??main_12:
+   \   000046   B2900300.... CMP.W   #0x3, &IOT_counter
+   \   00004C   0228         JNC     ??main_13
+    100                  P5OUT |= IOT_RESET;
+   \   00004E   D2D34202     BIS.B   #0x1, &0x242
+    101                }
+    102                IOT_counter = RESET_STATE;
+   \                     ??main_13:
+   \   000052   8243....     MOV.W   #0x0, &IOT_counter
+    103          //------------------------------------------------------------------------------
+    104          // Begining of the "While" Operating System
+    105          //------------------------------------------------------------------------------
+    106            while(ALWAYS) {                      // Can the Operating system run
+    107          
+    108              Switches_Process();                // Check for switch state change
+   \                     ??main_11:
+   \   000056   ........     CALLA   #Switches_Process
+    109              Display_Process();
+   \   00005A   ........     CALLA   #Display_Process
+    110          
+    111              if(IOT_counter == IPTime){
+   \   00005E   B2902C01.... CMP.W   #0x12c, &IOT_counter
+   \   000064   0D20         JNE     ??main_14
+    112                strcpy(test_command, "AT+NSTAT=?\r\n");
+   \   000066   3D40....     MOV.W   #`?<Constant "AT+NSTAT=?\\r\\n">`, R13
+   \   00006A   3C40....     MOV.W   #test_command, R12
+   \   00006E   ........     CALLA   #strcpy
+    113                UCA0_index = RESET_STATE;
+   \   000072   8243....     MOV.W   #0x0, &UCA0_index
+    114                UCA0IE |= UCTXIE;
+   \   000076   A2D31A05     BIS.W   #0x2, &0x51a
+    115                IOT_counter = IPDONE;
+   \   00007A   B2402E01.... MOV.W   #0x12e, &IOT_counter
+    116              }
+    117              
+    118              if(IOT_counter == IPTime){
+   \                     ??main_14:
+   \   000080   B2902C01.... CMP.W   #0x12c, &IOT_counter
+   \   000086   1A20         JNE     ??main_15
+    119               int displaystuff;
+    120                for(displaystuff = RESET_STATE; displaystuff < ARR7; displaystuff++){
+   \   000088   0F43         MOV.W   #0x0, R15
+   \                     ??main_1:
+   \   00008A   3F900700     CMP.W   #0x7, R15
+   \   00008E   0534         JGE     ??main_16
+    121                  display_line[LINEONE][displaystuff] = ipaddr[displaystuff];
+   \   000090   DF4F........ MOV.B   ipaddr(R15), display_line + 11(R15)
+    122                }
+   \   000096   1F53         ADD.W   #0x1, R15
+   \   000098   F83F         JMP     ??main_1
+    123                for(displaystuff = ARR7; displaystuff < ARR13; displaystuff++){
+   \                     ??main_16:
+   \   00009A   3F400700     MOV.W   #0x7, R15
+   \                     ??main_2:
+   \   00009E   3F900D00     CMP.W   #0xd, R15
+   \   0000A2   0934         JGE     ??main_17
+    124                  display_line[LINETWO][height] = ipaddr[displaystuff];
+   \   0000A4   1B42....     MOV.W   &height, R11
+   \   0000A8   DB4F........ MOV.B   ipaddr(R15), display_line + 22(R11)
+    125                  height++;
+   \   0000AE   9253....     ADD.W   #0x1, &height
+    126                }
+   \   0000B2   1F53         ADD.W   #0x1, R15
+   \   0000B4   F43F         JMP     ??main_2
+    127          
+    128               IOT_counter = IPDONE;
+   \                     ??main_17:
+   \   0000B6   B2402E01.... MOV.W   #0x12e, &IOT_counter
+    129              }
+    130              
+    131              if(IOT_counter == DisplayTime){
+   \                     ??main_15:
+   \   0000BC   B2905E01.... CMP.W   #0x15e, &IOT_counter
+   \   0000C2   0D20         JNE     ??main_18
+    132                strcpy(test_command, "AT+NSTCP=1066,1\r\n");
+   \   0000C4   3D40....     MOV.W   #`?<Constant "AT+NSTCP=1066,1\\r\\n">`, R13
+   \   0000C8   3C40....     MOV.W   #test_command, R12
+   \   0000CC   ........     CALLA   #strcpy
+    133                UCA0_index = RESET_STATE;
+   \   0000D0   8243....     MOV.W   #0x0, &UCA0_index
+    134                UCA0IE |= UCTXIE;
+   \   0000D4   A2D31A05     BIS.W   #0x2, &0x51a
+    135                IOT_counter = DisplayDONE;
+   \   0000D8   B2405F01.... MOV.W   #0x15f, &IOT_counter
+    136              }
+    137              
+    138          //----------------------------------------------------   
+    139              int loop = BEGINLOOP;
+   \                     ??main_18:
+   \   0000DE   0B43         MOV.W   #0x0, R11
+    140              while(loop < PBSIZE){
+   \                     ??main_3:
+   \   0000E0   3B902000     CMP.W   #0x20, R11
+   \   0000E4   0434         JGE     ??main_19
+    141                processbuffer[FIRST][loop] = RESET_STATE;   
+   \   0000E6   CB43....     MOV.B   #0x0, processbuffer(R11)
+    142                loop++;
+   \   0000EA   1B53         ADD.W   #0x1, R11
+   \   0000EC   F93F         JMP     ??main_3
+    143              }  
+    144              transmitflag = FALSE;
+   \                     ??main_19:
+   \   0000EE   8243....     MOV.W   #0x0, &transmitflag
+    145          //----------------------------------------------------
+    146            
+    147            if(display_flag){
+   \   0000F2   8293....     CMP.W   #0x0, &display_flag
+   \   0000F6   0424         JEQ     ??main_20
+    148              HEXtoBCD_RIGHT(project7_counter);
+   \   0000F8   1C42....     MOV.W   &project7_counter, R12
+   \   0000FC   ........     CALLA   #HEXtoBCD_RIGHT
+    149            }
+    150            
+    151          //-----------------------------------------------------    
+    152          if(iot_flag){
+   \                     ??main_20:
+   \   000100   8293....     CMP.W   #0x0, &iot_flag
+   \   000104   6325         JEQ     ??main_21
+    153            if( c == ARR2){
+   \   000106   A293....     CMP.W   #0x2, &c
+   \   00010A   0220         JNE     ??main_22
+    154              c = RESET_STATE;
+   \   00010C   8243....     MOV.W   #0x0, &c
+    155            }
+    156            int hundreds = (newbuffer[c][ARR5] - Offset) * hundred; 
+   \                     ??main_22:
+   \   000110   1F42....     MOV.W   &c, R15
+   \   000114   5F0E         RLAM.W  #0x4, R15
+   \   000116   5F02         RLAM.W  #0x1, R15
+   \   000118   584F....     MOV.B   newbuffer + 5(R15), R8
+   \   00011C   4848         MOV.B   R8, R8
+   \   00011E   3850D0FF     ADD.W   #0xffd0, R8
+   \   000122   5806         RLAM.W  #0x2, R8
+   \   000124   0F48         MOV.W   R8, R15
+   \   000126   580A         RLAM.W  #0x3, R8
+   \   000128   0F58         ADD.W   R8, R15
+   \   00012A   0858         RLA.W   R8
+   \   00012C   085F         ADD.W   R15, R8
+    157            int tens = (newbuffer[c][ARR6] - Offset) * ten;
+   \   00012E   1F42....     MOV.W   &c, R15
+   \   000132   5F0E         RLAM.W  #0x4, R15
+   \   000134   5F02         RLAM.W  #0x1, R15
+   \   000136   594F....     MOV.B   newbuffer + 6(R15), R9
+   \   00013A   4949         MOV.B   R9, R9
+   \   00013C   3950D0FF     ADD.W   #0xffd0, R9
+   \   000140   0959         RLA.W   R9
+   \   000142   0F49         MOV.W   R9, R15
+   \   000144   5906         RLAM.W  #0x2, R9
+   \   000146   095F         ADD.W   R15, R9
+    158            int ones = newbuffer[c][ARR7] - Offset;
+   \   000148   1F42....     MOV.W   &c, R15
+   \   00014C   5F0E         RLAM.W  #0x4, R15
+   \   00014E   5F02         RLAM.W  #0x1, R15
+   \   000150   5A4F....     MOV.B   newbuffer + 7(R15), R10
+   \   000154   4A4A         MOV.B   R10, R10
+   \   000156   3A50D0FF     ADD.W   #0xffd0, R10
+    159            int time = hundreds + tens + ones;
+   \   00015A   0648         MOV.W   R8, R6
+   \   00015C   0659         ADD.W   R9, R6
+   \   00015E   065A         ADD.W   R10, R6
+    160           
+    161            if( newbuffer[c][LINEZERO] == '1' && newbuffer[c][LINEONE] == '2' && newbuffer[c][LINETWO] == '3' && newbuffer[c][LINETHREE] == '4'){
+   \   000160   1F42....     MOV.W   &c, R15
+   \   000164   5F0E         RLAM.W  #0x4, R15
+   \   000166   5F02         RLAM.W  #0x1, R15
+   \   000168   FF903100.... CMP.B   #0x31, newbuffer(R15)
+   \   00016E   1C21         JNE     ??main_23
+   \   000170   1F42....     MOV.W   &c, R15
+   \   000174   5F0E         RLAM.W  #0x4, R15
+   \   000176   5F02         RLAM.W  #0x1, R15
+   \   000178   FF903200.... CMP.B   #0x32, newbuffer + 1(R15)
+   \   00017E   1421         JNE     ??main_23
+   \   000180   1F42....     MOV.W   &c, R15
+   \   000184   5F0E         RLAM.W  #0x4, R15
+   \   000186   5F02         RLAM.W  #0x1, R15
+   \   000188   FF903300.... CMP.B   #0x33, newbuffer + 2(R15)
+   \   00018E   0C21         JNE     ??main_23
+   \   000190   1F42....     MOV.W   &c, R15
+   \   000194   5F0E         RLAM.W  #0x4, R15
+   \   000196   5F02         RLAM.W  #0x1, R15
+   \   000198   FF903400.... CMP.B   #0x34, newbuffer + 3(R15)
+   \   00019E   0421         JNE     ??main_23
+    162          
+    163              if(newbuffer[c][ARR4] == 'F'){
+   \   0001A0   1F42....     MOV.W   &c, R15
+   \   0001A4   5F0E         RLAM.W  #0x4, R15
+   \   0001A6   5F02         RLAM.W  #0x1, R15
+   \   0001A8   FF904600.... CMP.B   #0x46, newbuffer + 4(R15)
+   \   0001AE   1B20         JNE     ??main_24
+    164                strcpy(display_line[LINEONE], "  Forward ");
+   \   0001B0   3D40....     MOV.W   #`?<Constant "  Forward ">`, R13
+   \   0001B4   3C40....     MOV.W   #display_line + 11, R12
+   \   0001B8   ........     CALLA   #strcpy
+    165                update_string(display_line[LINEONE], LINEONE);
+   \   0001BC   1D43         MOV.W   #0x1, R13
+   \   0001BE   3C40....     MOV.W   #display_line + 11, R12
+   \   0001C2   ........     CALLA   #update_string
+    166                serial_counter = FALSE;
+   \   0001C6   8243....     MOV.W   #0x0, &serial_counter
+    167                while( serial_counter < time){
+   \                     ??main_4:
+   \   0001CA   8296....     CMP.W   R6, &serial_counter
+   \   0001CE   092C         JC      ??main_25
+    168                  right_forward_pwm(faster);
+   \   0001D0   3C403075     MOV.W   #0x7530, R12
+   \   0001D4   ........     CALLA   #right_forward_pwm
+    169                  left_forward_pwm(faster);
+   \   0001D8   3C403075     MOV.W   #0x7530, R12
+   \   0001DC   ........     CALLA   #left_forward_pwm
+   \   0001E0   F43F         JMP     ??main_4
+    170                }
+    171                stop_wheels_pwm();
+   \                     ??main_25:
+   \   0001E2   ........     CALLA   #stop_wheels_pwm
+    172              }
+    173              if(newbuffer[c][ARR4] == 'B'){
+   \                     ??main_24:
+   \   0001E6   1F42....     MOV.W   &c, R15
+   \   0001EA   5F0E         RLAM.W  #0x4, R15
+   \   0001EC   5F02         RLAM.W  #0x1, R15
+   \   0001EE   FF904200.... CMP.B   #0x42, newbuffer + 4(R15)
+   \   0001F4   1B20         JNE     ??main_26
+    174                strcpy(display_line[LINEONE], "  REVERSE ");
+   \   0001F6   3D40....     MOV.W   #`?<Constant "  REVERSE ">`, R13
+   \   0001FA   3C40....     MOV.W   #display_line + 11, R12
+   \   0001FE   ........     CALLA   #strcpy
+    175                update_string(display_line[LINEONE], LINEONE);
+   \   000202   1D43         MOV.W   #0x1, R13
+   \   000204   3C40....     MOV.W   #display_line + 11, R12
+   \   000208   ........     CALLA   #update_string
+    176                serial_counter = FALSE;
+   \   00020C   8243....     MOV.W   #0x0, &serial_counter
+    177                while( serial_counter < time){
+   \                     ??main_5:
+   \   000210   8296....     CMP.W   R6, &serial_counter
+   \   000214   092C         JC      ??main_27
+    178                  left_reverse_pwm(faster);
+   \   000216   3C403075     MOV.W   #0x7530, R12
+   \   00021A   ........     CALLA   #left_reverse_pwm
+    179                  right_reverse_pwm(faster);
+   \   00021E   3C403075     MOV.W   #0x7530, R12
+   \   000222   ........     CALLA   #right_reverse_pwm
+   \   000226   F43F         JMP     ??main_5
+    180                }
+    181                stop_wheels_pwm();
+   \                     ??main_27:
+   \   000228   ........     CALLA   #stop_wheels_pwm
+    182              }
+    183              if(newbuffer[c][ARR4] == 'L'){
+   \                     ??main_26:
+   \   00022C   1F42....     MOV.W   &c, R15
+   \   000230   5F0E         RLAM.W  #0x4, R15
+   \   000232   5F02         RLAM.W  #0x1, R15
+   \   000234   FF904C00.... CMP.B   #0x4c, newbuffer + 4(R15)
+   \   00023A   1B20         JNE     ??main_28
+    184                strcpy(display_line[LINEONE], "   LEFT   ");
+   \   00023C   3D40....     MOV.W   #`?<Constant "   LEFT   ">`, R13
+   \   000240   3C40....     MOV.W   #display_line + 11, R12
+   \   000244   ........     CALLA   #strcpy
+    185                update_string(display_line[LINEONE], LINEONE);
+   \   000248   1D43         MOV.W   #0x1, R13
+   \   00024A   3C40....     MOV.W   #display_line + 11, R12
+   \   00024E   ........     CALLA   #update_string
+    186                serial_counter = FALSE;
+   \   000252   8243....     MOV.W   #0x0, &serial_counter
+    187                while( serial_counter < time){
+   \                     ??main_6:
+   \   000256   8296....     CMP.W   R6, &serial_counter
+   \   00025A   092C         JC      ??main_29
+    188                  right_reverse_pwm(fast);
+   \   00025C   3C40204E     MOV.W   #0x4e20, R12
+   \   000260   ........     CALLA   #right_reverse_pwm
+    189                  left_forward_pwm(faster);
+   \   000264   3C403075     MOV.W   #0x7530, R12
+   \   000268   ........     CALLA   #left_forward_pwm
+   \   00026C   F43F         JMP     ??main_6
+    190                }
+    191                stop_wheels_pwm();
+   \                     ??main_29:
+   \   00026E   ........     CALLA   #stop_wheels_pwm
+    192              }
+    193              if(newbuffer[c][ARR4] == 'R'){
+   \                     ??main_28:
+   \   000272   1F42....     MOV.W   &c, R15
+   \   000276   5F0E         RLAM.W  #0x4, R15
+   \   000278   5F02         RLAM.W  #0x1, R15
+   \   00027A   FF905200.... CMP.B   #0x52, newbuffer + 4(R15)
+   \   000280   1B20         JNE     ??main_30
+    194                strcpy(display_line[LINEONE], "   RIGHT  ");
+   \   000282   3D40....     MOV.W   #`?<Constant "   RIGHT  ">`, R13
+   \   000286   3C40....     MOV.W   #display_line + 11, R12
+   \   00028A   ........     CALLA   #strcpy
+    195                update_string(display_line[LINEONE], LINEONE);
+   \   00028E   1D43         MOV.W   #0x1, R13
+   \   000290   3C40....     MOV.W   #display_line + 11, R12
+   \   000294   ........     CALLA   #update_string
+    196                serial_counter = FALSE;
+   \   000298   8243....     MOV.W   #0x0, &serial_counter
+    197                while( serial_counter < time){
+   \                     ??main_7:
+   \   00029C   8296....     CMP.W   R6, &serial_counter
+   \   0002A0   092C         JC      ??main_31
+    198                   left_reverse_pwm(faster);
+   \   0002A2   3C403075     MOV.W   #0x7530, R12
+   \   0002A6   ........     CALLA   #left_reverse_pwm
+    199                   right_forward_pwm(faster);
+   \   0002AA   3C403075     MOV.W   #0x7530, R12
+   \   0002AE   ........     CALLA   #right_forward_pwm
+   \   0002B2   F43F         JMP     ??main_7
+    200                }
+    201                stop_wheels_pwm();
+   \                     ??main_31:
+   \   0002B4   ........     CALLA   #stop_wheels_pwm
+    202              }
+    203              if(newbuffer[c][ARR4] == 'D'){
+   \                     ??main_30:
+   \   0002B8   1F42....     MOV.W   &c, R15
+   \   0002BC   5F0E         RLAM.W  #0x4, R15
+   \   0002BE   5F02         RLAM.W  #0x1, R15
+   \   0002C0   FF904400.... CMP.B   #0x44, newbuffer + 4(R15)
+   \   0002C6   0F20         JNE     ??main_32
+    204                //disPlay stuff
+    205                strcpy(display_line[LINEZERO], "Arrive    ");
+   \   0002C8   3D40....     MOV.W   #`?<Constant "Arrive    ">`, R13
+   \   0002CC   3C40....     MOV.W   #display_line, R12
+   \   0002D0   ........     CALLA   #strcpy
+    206                update_string(display_line[LINEZERO], LINEZERO);
+   \   0002D4   0D43         MOV.W   #0x0, R13
+   \   0002D6   ........     CALLA   #update_string
+    207                HEXtoBCD_LEFT(onnumber);
+   \   0002DA   1C42....     MOV.W   &onnumber, R12
+   \   0002DE   ........     CALLA   #HEXtoBCD_LEFT
+    208                onnumber++;
+   \   0002E2   9253....     ADD.W   #0x1, &onnumber
+    209              }
+    210              if(newbuffer[c][ARR4] == 'C'){
+   \                     ??main_32:
+   \   0002E6   1F42....     MOV.W   &c, R15
+   \   0002EA   5F0E         RLAM.W  #0x4, R15
+   \   0002EC   5F02         RLAM.W  #0x1, R15
+   \   0002EE   FF904300.... CMP.B   #0x43, newbuffer + 4(R15)
+   \   0002F4   1920         JNE     ??main_33
+    211                strcpy(display_line[LINEONE], "BLKLINENAV");
+   \   0002F6   3D40....     MOV.W   #`?<Constant "BLKLINENAV">`, R13
+   \   0002FA   3C40....     MOV.W   #display_line + 11, R12
+   \   0002FE   ........     CALLA   #strcpy
+    212                update_string(display_line[LINEONE], LINEONE);
+   \   000302   1D43         MOV.W   #0x1, R13
+   \   000304   3C40....     MOV.W   #display_line + 11, R12
+   \   000308   ........     CALLA   #update_string
+    213                P3OUT |= IR_LED;
+   \   00030C   F2D020002202 BIS.B   #0x20, &0x222
+    214                //circle
+    215                //arc code
+    216                num8_counter = RESET_STATE;
+   \   000312   8243....     MOV.W   #0x0, &num8_counter
+    217                while(num8_counter < STOPCNT){
+   \                     ??main_8:
+   \   000316   B2905000.... CMP.W   #0x50, &num8_counter
+   \   00031C   032C         JC      ??main_34
+    218                  stop_wheels_pwm();
+   \   00031E   ........     CALLA   #stop_wheels_pwm
+   \   000322   F93F         JMP     ??main_8
+    219                } 
+    220                blacklinenavflag = TRUE;
+   \                     ??main_34:
+   \   000324   9243....     MOV.W   #0x1, &blacklinenavflag
+    221                //BlackLineNav();
+    222                //set flag high
+    223              }
+    224              if(newbuffer[c][ARR4] == 'E'){
+   \                     ??main_33:
+   \   000328   1F42....     MOV.W   &c, R15
+   \   00032C   5F0E         RLAM.W  #0x4, R15
+   \   00032E   5F02         RLAM.W  #0x1, R15
+   \   000330   FF904500.... CMP.B   #0x45, newbuffer + 4(R15)
+   \   000336   3820         JNE     ??main_23
+    225                //set flag low
+    226                blacklinenavflag = FALSE;
+   \   000338   8243....     MOV.W   #0x0, &blacklinenavflag
+    227                //exit command
+    228                stop_wheels_pwm();
+   \   00033C   ........     CALLA   #stop_wheels_pwm
+    229                P3OUT &= ~IR_LED;
+   \   000340   F2C020002202 BIC.B   #0x20, &0x222
+    230                status_counter = RESET_STATE;
+   \   000346   8243....     MOV.W   #0x0, &status_counter
+    231                while(status_counter < time){
+   \                     ??main_9:
+   \   00034A   8296....     CMP.W   R6, &status_counter
+   \   00034E   212C         JC      ??main_35
+    232                  strcpy(display_line[LINEZERO], " Exitting ");
+   \   000350   3D40....     MOV.W   #`?<Constant " Exitting ">`, R13
+   \   000354   3C40....     MOV.W   #display_line, R12
+   \   000358   ........     CALLA   #strcpy
+    233                  update_string(display_line[LINEZERO], LINEZERO);
+   \   00035C   0D43         MOV.W   #0x0, R13
+   \   00035E   ........     CALLA   #update_string
+    234                  if(status_counter < EXITTIMER){
+   \   000362   B2901400.... CMP.W   #0x14, &status_counter
+   \   000368   092C         JC      ??main_36
+    235                    right_forward_pwm(fast);
+   \   00036A   3C40204E     MOV.W   #0x4e20, R12
+   \   00036E   ........     CALLA   #right_forward_pwm
+    236                    left_reverse_pwm(fast);
+   \   000372   3C40204E     MOV.W   #0x4e20, R12
+   \   000376   ........     CALLA   #left_reverse_pwm
+   \   00037A   E73F         JMP     ??main_9
+    237                  }
+    238                  else{
+    239                    stop_wheels_pwm();
+   \                     ??main_36:
+   \   00037C   ........     CALLA   #stop_wheels_pwm
+    240                    right_forward_pwm(faster);
+   \   000380   3C403075     MOV.W   #0x7530, R12
+   \   000384   ........     CALLA   #right_forward_pwm
+    241                    left_forward_pwm(faster);
+   \   000388   3C403075     MOV.W   #0x7530, R12
+   \   00038C   ........     CALLA   #left_forward_pwm
+   \   000390   DC3F         JMP     ??main_9
+    242                  }
+    243                }
+    244                
+    245                stop_wheels_pwm();
+   \                     ??main_35:
+   \   000392   ........     CALLA   #stop_wheels_pwm
+    246                strcpy(display_line[LINEZERO], "  Stopped ");
+   \   000396   3D40....     MOV.W   #`?<Constant "  Stopped ">`, R13
+   \   00039A   3C40....     MOV.W   #display_line, R12
+   \   00039E   ........     CALLA   #strcpy
+    247                update_string(display_line[LINEZERO], LINEZERO);   
+   \   0003A2   0D43         MOV.W   #0x0, R13
+   \   0003A4   ........     CALLA   #update_string
+    248              
+    249                }
+    250            }
+    251          //------------------------------------------------------------------------------  
+    252                int clear;
+    253                for(clear = RESET_STATE; clear < ClearSize; clear++){
+   \                     ??main_23:
+   \   0003A8   0F43         MOV.W   #0x0, R15
+   \                     ??main_10:
+   \   0003AA   3F92         CMP.W   #0x8, R15
+   \   0003AC   0B34         JGE     ??main_37
+    254                  newbuffer[c][clear] = FALSE;
+   \   0003AE   1E42....     MOV.W   &c, R14
+   \   0003B2   5E0E         RLAM.W  #0x4, R14
+   \   0003B4   5E02         RLAM.W  #0x1, R14
+   \   0003B6   0E5F         ADD.W   R15, R14
+   \   0003B8   CE43....     MOV.B   #0x0, newbuffer(R14)
+    255                  a = RESET_STATE;
+   \   0003BC   8243....     MOV.W   #0x0, &`a`
+    256                } 
+   \   0003C0   1F53         ADD.W   #0x1, R15
+   \   0003C2   F33F         JMP     ??main_10
+    257                c++;        
+   \                     ??main_37:
+   \   0003C4   9253....     ADD.W   #0x1, &c
+    258                iot_flag--;
+   \   0003C8   B253....     ADD.W   #0xffff, &iot_flag
+    259              }
+    260          //------------------------------------------------------------------------------
+    261            if(blacklinenavflag){
+   \                     ??main_21:
+   \   0003CC   8293....     CMP.W   #0x0, &blacklinenavflag
+   \   0003D0   4226         JEQ     ??main_11
+    262              BlackLineNav();
+   \   0003D2   ........     CALLA   #BlackLineNav
+   \   0003D6   3F3E         JMP     ??main_11
+   \   0003D8   0343         NOP
+   \   0003DA                REQUIRE _A_PCOUT_L
+   \   0003DA                REQUIRE _A_UCA0IE_L
+   \   0003DA                REQUIRE _A_PBOUT_L
+    263            }
+    264            
+    265           }
+    266            
+    267          }
+
+   \                                 In  segment DATA16_ID, align 2, align-sorted
+   \                     `?<Initializer for display_flag>`:
+   \   000000   0100         DC16 1
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant " Waiting  ">`:
+   \   000000   205761697469 DC8 " Waiting  "
+   \            6E67202000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "AT+NSTAT=?\\r\\n">`:
+   \   000000   41542B4E5354 DC8 "AT+NSTAT=?\015\012"
+   \            41543D3F0D0A
+   \            00          
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "AT+NSTCP=1066,1\\r\\n">`:
+   \   000000   41542B4E5354 DC8 "AT+NSTCP=1066,1\015\012"
+   \            43503D313036
+   \            362C310D0A00
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "  Forward ">`:
+   \   000000   2020466F7277 DC8 "  Forward "
+   \            6172642000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "  REVERSE ">`:
+   \   000000   202052455645 DC8 "  REVERSE "
+   \            5253452000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "   LEFT   ">`:
+   \   000000   2020204C4546 DC8 "   LEFT   "
+   \            5420202000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "   RIGHT  ">`:
+   \   000000   202020524947 DC8 "   RIGHT  "
+   \            4854202000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "Arrive    ">`:
+   \   000000   417272697665 DC8 "Arrive    "
+   \            2020202000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "BLKLINENAV">`:
+   \   000000   424C4B4C494E DC8 "BLKLINENAV"
+   \            454E415600  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant " Exitting ">`:
+   \   000000   204578697474 DC8 " Exitting "
+   \            696E672000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "  Stopped ">`:
+   \   000000   202053746F70 DC8 "  Stopped "
+   \            7065642000  
+    268          //------------------------------------------------------------------------------
+    269          
+    270          
+    271          
+    272          
+
+   Maximum stack usage in bytes:
+
+   CSTACK Function
+   ------ --------
+      4   main
+        4   -> BlackLineNav
+        4   -> Display_Process
+        4   -> HEXtoBCD_LEFT
+        4   -> HEXtoBCD_RIGHT
+        4   -> Init_ADC
+        4   -> Init_Clocks
+        4   -> Init_Conditions
+        4   -> Init_LCD
+        4   -> Init_Ports
+        4   -> Init_Serial_UCA0
+        4   -> Init_Serial_UCA1
+        4   -> Init_Timers
+        4   -> Switches_Process
+        4   -> enable_display_update
+        4   -> left_forward_pwm
+        4   -> left_reverse_pwm
+        4   -> right_forward_pwm
+        4   -> right_reverse_pwm
+        4   -> stop_wheels_pwm
+        4   -> strcpy
+        4   -> update_string
+
+
+   Segment part sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+      11  ?<Constant "   LEFT   ">
+      11  ?<Constant "   RIGHT  ">
+      11  ?<Constant "  Forward ">
+      11  ?<Constant "  REVERSE ">
+      11  ?<Constant "  Stopped ">
+      11  ?<Constant " Exitting ">
+      11  ?<Constant " Waiting  ">
+      13  ?<Constant "AT+NSTAT=?\r\n">
+      18  ?<Constant "AT+NSTCP=1066,1\r\n">
+      11  ?<Constant "Arrive    ">
+      11  ?<Constant "BLKLINENAV">
+       2  ?<Initializer for display_flag>
+       2  ADC_Thumb
+       2  _A_PBOUT_L
+       2  _A_PCOUT_L
+       2  _A_UCA0IE_L
+       2  arr
+       2  blacklinenavflag
+       2  c
+       1  change
+       1  chosen_direction
+       2  display_flag
+       1  display_mode
+       2  done
+       2  height
+       2  j
+     986  main
+       1  newchar
+       2  onnumber
+      64  processbuffer
+       1  slow_input_down
+       2  test_value
+
+ 
+ 986 bytes in segment CODE
+   6 bytes in segment DATA16_AN
+ 130 bytes in segment DATA16_C
+   2 bytes in segment DATA16_I
+   2 bytes in segment DATA16_ID
+  87 bytes in segment DATA16_Z
+ 
+ 986 bytes of CODE  memory
+ 132 bytes of CONST memory
+  89 bytes of DATA  memory (+ 6 bytes shared)
+
+Errors: none
+Warnings: none

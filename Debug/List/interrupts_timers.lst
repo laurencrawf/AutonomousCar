@@ -1,0 +1,480 @@
+###############################################################################
+#
+# IAR C/C++ Compiler V7.12.3.989/W32 for MSP430           24/Apr/2020  12:34:17
+# Copyright 1996-2019 IAR Systems AB.
+# PC-locked license - IAR Embedded Workbench for MSP430, 8K KickStart Edition 7.12
+#
+#    __rt_version  =  3
+#    __double_size =  32
+#    __reg_r4      =  free
+#    __reg_r5      =  free
+#    __pic         =  no
+#    __core        =  430X
+#    __data_model  =  small
+#    __code_model  =  large
+#    Source file   =  
+#        C:\Users\laure\OneDrive\Documents\ECE_306_Code\Project 10 Code
+#        Submission\interrupts_timers.c
+#    Command line  =  
+#        -f C:\Users\laure\AppData\Local\Temp\EWECAC.tmp
+#        ("C:\Users\laure\OneDrive\Documents\ECE_306_Code\Project 10 Code
+#        Submission\interrupts_timers.c" -lC
+#        "C:\Users\laure\OneDrive\Documents\ECE_306_Code\Project 10 Code
+#        Submission\Debug\List" -o
+#        "C:\Users\laure\OneDrive\Documents\ECE_306_Code\Project 10 Code
+#        Submission\Debug\Obj" --no_cse --no_unroll --no_inline
+#        --no_code_motion --no_tbaa --debug -D__MSP430FR2355__ -e --double=32
+#        --dlib_config "C:\Program Files (x86)\IAR Systems\Embedded Workbench
+#        8.0\430\lib\dlib\dl430xlsfn.h" -I ./\ --core=430X --data_model=small
+#        -On --multiplier=32 --hw_workaround=CPU40 --code_model=large)
+#    Locale        =  English_USA.1252
+#    List file     =  
+#        C:\Users\laure\OneDrive\Documents\ECE_306_Code\Project 10 Code
+#        Submission\Debug\List\interrupts_timers.lst
+#    Object file   =  
+#        C:\Users\laure\OneDrive\Documents\ECE_306_Code\Project 10 Code
+#        Submission\Debug\Obj\interrupts_timers.r43
+#
+###############################################################################
+
+C:\Users\laure\OneDrive\Documents\ECE_306_Code\Project 10 Code Submission\interrupts_timers.c
+      1          //------------------------------------------------------------------------------
+      2          //
+      3          //  Description: This file contains the Interrupt Timers 
+      4          //
+      5          //
+      6          //  Lauren Crawford
+      7          //  02/21/2020
+      8          //  Built with IAR Embedded Workbench Version: V4.10A/W32 (7.11.2)
+      9          //------------------------------------------------------------------------------
+     10          
+     11          #include  "functions.h"
+     12          #include  "msp430.h"
+
+   \                                 In  segment DATA16_AN, at 0x21a
+   \   union <unnamed> _A_PAIE_L
+   \                     _A_PAIE_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x21c
+   \   union <unnamed> _A_PAIFG_L
+   \                     _A_PAIFG_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x23a
+   \   union <unnamed> _A_PBIE_L
+   \                     _A_PBIE_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x23c
+   \   union <unnamed> _A_PBIFG_L
+   \                     _A_PBIFG_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x382
+   \   union <unnamed> _A_TB0CCTL0_L
+   \                     _A_TB0CCTL0_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x384
+   \   union <unnamed> _A_TB0CCTL1_L
+   \                     _A_TB0CCTL1_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x392
+   \   union <unnamed> _A_TB0CCR0_L
+   \                     _A_TB0CCR0_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x394
+   \   union <unnamed> _A_TB0CCR1_L
+   \                     _A_TB0CCR1_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x396
+   \   union <unnamed> _A_TB0CCR2_L
+   \                     _A_TB0CCR2_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x3ae
+   \   union <unnamed> _A_TB0IV_L
+   \                     _A_TB0IV_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x440
+   \   union <unnamed> _A_TB3CTL_L
+   \                     _A_TB3CTL_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x444
+   \   union <unnamed> _A_TB3CCTL1_L
+   \                     _A_TB3CCTL1_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x446
+   \   union <unnamed> _A_TB3CCTL2_L
+   \                     _A_TB3CCTL2_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x448
+   \   union <unnamed> _A_TB3CCTL3_L
+   \                     _A_TB3CCTL3_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x44a
+   \   union <unnamed> _A_TB3CCTL4_L
+   \                     _A_TB3CCTL4_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x452
+   \   union <unnamed> _A_TB3CCR0_L
+   \                     _A_TB3CCR0_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x454
+   \   union <unnamed> _A_TB3CCR1_L
+   \                     _A_TB3CCR1_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x456
+   \   union <unnamed> _A_TB3CCR2_L
+   \                     _A_TB3CCR2_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x458
+   \   union <unnamed> _A_TB3CCR3_L
+   \                     _A_TB3CCR3_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x45a
+   \   union <unnamed> _A_TB3CCR4_L
+   \                     _A_TB3CCR4_L:
+   \   000000                DS8 2
+     13          #include <string.h>
+     14          #include "macros.h"
+     15          
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     16          extern volatile unsigned int display_counter = RESET_STATE;
+   \                     display_counter:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     17          extern volatile unsigned int status_counter = RESET_STATE; 
+   \                     status_counter:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     18          volatile unsigned int debounce_countSW1 = RESET_STATE;
+   \                     debounce_countSW1:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     19          volatile unsigned int debounce_countSW2 = RESET_STATE;
+   \                     debounce_countSW2:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     20          volatile unsigned int SW1_pressed;
+   \                     SW1_pressed:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     21          volatile unsigned int SW2_pressed;
+   \                     SW2_pressed:
+   \   000000                DS8 2
+     22          extern volatile unsigned int SW1_debounce_in_progress;
+     23          extern volatile unsigned int SW2_debounce_in_progress;
+     24          
+     25          extern char display_line[HEIGHTFOUR][ELEVENTH_CHARACTER];
+     26          extern volatile unsigned char display_changed;
+     27          extern volatile unsigned char update_display;
+     28          extern volatile unsigned int update_display_count;
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     29          volatile unsigned int serial_counter = FALSE;
+   \                     serial_counter:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     30          volatile unsigned int IOT_counter = FALSE;
+   \                     IOT_counter:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     31          volatile unsigned int project7_counter = RESET_STATE;
+   \                     project7_counter:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     32          volatile unsigned int num8_counter = RESET_STATE;
+   \                     num8_counter:
+   \   000000                DS8 2
+     33          
+     34          #pragma vector = TIMER0_B0_VECTOR
+
+   \                                 In  segment ISR_CODE, align 2
+     35          __interrupt void Timer0_B0_ISR(void){
+   \                     Timer0_B0_ISR:
+     36              display_counter++;
+   \   000000   9253....     ADD.W   #0x1, &display_counter
+     37              status_counter++;
+   \   000004   9253....     ADD.W   #0x1, &status_counter
+     38              serial_counter++;
+   \   000008   9253....     ADD.W   #0x1, &serial_counter
+     39              IOT_counter++;
+   \   00000C   9253....     ADD.W   #0x1, &IOT_counter
+     40              num8_counter++;
+   \   000010   9253....     ADD.W   #0x1, &num8_counter
+     41              TB0CCR0 += TB0CCR0_INTERVAL; // Add Offset to TBCCR0
+   \   000014   B250A8619203 ADD.W   #0x61a8, &0x392
+     42              
+     43             if(display_counter == COUNT40){
+   \   00001A   B2902800.... CMP.W   #0x28, &display_counter
+   \   000020   0820         JNE     ??Timer0_B0_ISR_0
+     44              project7_counter++;
+   \   000022   9253....     ADD.W   #0x1, &project7_counter
+     45              update_display = TRUE;
+   \   000026   D243....     MOV.B   #0x1, &update_display
+     46              display_changed = TRUE;
+   \   00002A   D243....     MOV.B   #0x1, &display_changed
+     47              display_counter = RESET_STATE;
+   \   00002E   8243....     MOV.W   #0x0, &display_counter
+     48          }
+     49            }
+   \                     ??Timer0_B0_ISR_0:
+   \   000032   0013         RETI
+   \   000034                REQUIRE _A_TB0CCR0_L
+     50             
+     51          
+     52          #pragma vector=TIMER0_B1_VECTOR
+
+   \                                 In  segment ISR_CODE, align 2
+     53          __interrupt void TIMER0_B1_ISR(void){
+   \                     TIMER0_B1_ISR:
+   \   000000   0F12         PUSH.W  R15
+     54          //----------------------------------------------------------------------------
+     55          // TimerB0 1-2, Overflow Interrupt Vector (TBIV) handler
+     56          //----------------------------------------------------------------------------
+     57          switch(__even_in_range(TB0IV,COUNT14)){
+   \   000002   1F42AE03     MOV.W   &0x3ae, R15
+   \   000006   E00F         ADDA    R15, PC
+   \                     `?<Jumptable for TIMER0_B1_ISR>_0`:
+   \   000008   363C         JMP     ??TIMER0_B1_ISR_2
+   \   00000A   063C         JMP     ??TIMER0_B1_ISR_4
+   \   00000C   313C         JMP     ??TIMER0_B1_ISR_5
+   \   00000E   333C         JMP     ??TIMER0_B1_ISR_2
+   \   000010   323C         JMP     ??TIMER0_B1_ISR_2
+   \   000012   313C         JMP     ??TIMER0_B1_ISR_2
+   \   000014   303C         JMP     ??TIMER0_B1_ISR_2
+   \   000016   2F3C         JMP     ??TIMER0_B1_ISR_2
+     58          case RESET_STATE: break; // No interrupt
+     59          case SW1CASE: // CCR1  used
+     60          //...... Add What you need happen in the interrupt ......
+     61          //TB0CCR1 += TB0CCR1_INTERVAL; // Add Offset to TBCCR1
+     62          
+     63          debounce_countSW2++;
+   \                     ??TIMER0_B1_ISR_4:
+   \   000018   9253....     ADD.W   #0x1, &debounce_countSW2
+     64            if(debounce_countSW2 == COUNTTEN){
+   \   00001C   B2900A00.... CMP.W   #0xa, &debounce_countSW2
+   \   000022   0E20         JNE     ??TIMER0_B1_ISR_3
+     65              P2IE |= SW2;
+   \   000024   F2D21B02     BIS.B   #0x8, &0x21b
+     66              P2IFG &= ~SW2;
+   \   000028   F2C21D02     BIC.B   #0x8, &0x21d
+     67              TB0CCTL0 |= CCIE;
+   \   00002C   B2D010008203 BIS.W   #0x10, &0x382
+     68              TB0CCTL1 &= ~CCIE;
+   \   000032   B2C010008403 BIC.W   #0x10, &0x384
+     69             
+     70              SW2_pressed = RESET_STATE;
+   \   000038   8243....     MOV.W   #0x0, &SW2_pressed
+     71              debounce_countSW2 = RESET_STATE;
+   \   00003C   8243....     MOV.W   #0x0, &debounce_countSW2
+     72            }
+     73            TB0CCR1 += TB0CCR1_INTERVAL; // Add Offset to TBCCR1
+   \                     ??TIMER0_B1_ISR_3:
+   \   000040   B250A8619403 ADD.W   #0x61a8, &0x394
+     74          
+     75          debounce_countSW1++;
+   \   000046   9253....     ADD.W   #0x1, &debounce_countSW1
+     76            if(debounce_countSW1 == COUNTTEN){
+   \   00004A   B2900A00.... CMP.W   #0xa, &debounce_countSW1
+   \   000050   1220         JNE     ??TIMER0_B1_ISR_2
+     77              P4IE |= SW1;
+   \   000052   E2D33B02     BIS.B   #0x2, &0x23b
+     78              P4IFG &= ~SW1;
+   \   000056   E2C33D02     BIC.B   #0x2, &0x23d
+     79              TB0CCTL0 |= CCIE;
+   \   00005A   B2D010008203 BIS.W   #0x10, &0x382
+     80              TB0CCTL1 &= ~CCIE;
+   \   000060   B2C010008403 BIC.W   #0x10, &0x384
+     81            
+     82              SW1_pressed = RESET_STATE;
+   \   000066   8243....     MOV.W   #0x0, &SW1_pressed
+     83              debounce_countSW1 = RESET_STATE;
+   \   00006A   8243....     MOV.W   #0x0, &debounce_countSW1
+     84            }
+     85          
+     86          
+     87          break;
+   \   00006E   033C         JMP     ??TIMER0_B1_ISR_2
+     88          
+     89          case SW2CASE: // CCR2 not used
+     90          //...... Add What you need happen in the interrupt ......
+     91          TB0CCR2 += TB0CCR2_INTERVAL; // Add Offset to TBCCR2
+   \                     ??TIMER0_B1_ISR_5:
+   \   000070   B250A8619603 ADD.W   #0x61a8, &0x396
+     92          
+     93          break;
+     94          
+     95          case OVERFLOWCASE: // overflow
+     96          //...... Add What you need happen in the interrupt ......
+     97          break;
+     98          default: break;
+     99          }
+    100          //----------------------------------------------------------------------------
+    101          }
+   \                     ??TIMER0_B1_ISR_2:
+   \   000076   3F41         POP.W   R15
+   \   000078   0013         RETI
+   \   00007A                REQUIRE _A_PAIE_L
+   \   00007A                REQUIRE _A_PAIFG_L
+   \   00007A                REQUIRE _A_TB0CCTL0_L
+   \   00007A                REQUIRE _A_TB0CCTL1_L
+   \   00007A                REQUIRE _A_TB0CCR1_L
+   \   00007A                REQUIRE _A_PBIE_L
+   \   00007A                REQUIRE _A_PBIFG_L
+   \   00007A                REQUIRE _A_TB0CCR2_L
+   \   00007A                REQUIRE _A_TB0IV_L
+    102          
+
+   \                                 In  segment CODE, align 2
+    103          void Init_Timer_B3(void) {
+   \                     Init_Timer_B3:
+    104          //------------------------------------------------------------------------------
+    105          // SMCLK source, up count mode, PWM Right Side
+    106          // TB3.1 P6.0 R_FORWARD
+    107          // TB3.2 P6.1 L_FORWARD
+    108          // TB3.3 P6.2 R_REVERSE
+    109          // TB3.4 P6.3 L_REVERSE
+    110          //------------------------------------------------------------------------------
+    111           TB3CTL = TBSSEL__SMCLK; // SMCLK
+   \   000000   B24000024004 MOV.W   #0x200, &0x440
+    112           TB3CTL |= MC__UP; // Up Mode
+   \   000006   B2D010004004 BIS.W   #0x10, &0x440
+    113           TB3CTL |= TBCLR; // Clear TAR
+   \   00000C   A2D24004     BIS.W   #0x4, &0x440
+    114           TB3CCR0 = WHEEL_PERIOD; // PWM Period
+   \   000010   B24060EA5204 MOV.W   #0xea60, &0x452
+    115           TB3CCTL1 = OUTMOD_7; // CCR1 reset/set
+   \   000016   B240E0004404 MOV.W   #0xe0, &0x444
+    116           RIGHT_FORWARD_SPEED = WHEEL_OFF; // P6.0 Right Forward PWM duty cycle
+   \   00001C   82435404     MOV.W   #0x0, &0x454
+    117           TB3CCTL2 = OUTMOD_7; // CCR2 reset/set
+   \   000020   B240E0004604 MOV.W   #0xe0, &0x446
+    118           LEFT_FORWARD_SPEED = WHEEL_OFF; // P6.1 Left Forward PWM duty cycle
+   \   000026   82435604     MOV.W   #0x0, &0x456
+    119           TB3CCTL3 = OUTMOD_7; // CCR3 reset/set
+   \   00002A   B240E0004804 MOV.W   #0xe0, &0x448
+    120           RIGHT_REVERSE_SPEED = WHEEL_OFF; // P6.2 Right Reverse PWM duty cycle
+   \   000030   82435804     MOV.W   #0x0, &0x458
+    121           TB3CCTL4 = OUTMOD_7; // CCR4 reset/set
+   \   000034   B240E0004A04 MOV.W   #0xe0, &0x44a
+    122           LEFT_REVERSE_SPEED = WHEEL_OFF; // P6.3 Left Reverse PWM duty cycle
+   \   00003A   82435A04     MOV.W   #0x0, &0x45a
+    123          //------------------------------------------------------------------------------
+    124          }
+   \   00003E   1001         RETA
+   \   000040                REQUIRE _A_TB3CTL_L
+   \   000040                REQUIRE _A_TB3CCR0_L
+   \   000040                REQUIRE _A_TB3CCTL1_L
+   \   000040                REQUIRE _A_TB3CCR1_L
+   \   000040                REQUIRE _A_TB3CCTL2_L
+   \   000040                REQUIRE _A_TB3CCR2_L
+   \   000040                REQUIRE _A_TB3CCTL3_L
+   \   000040                REQUIRE _A_TB3CCR3_L
+   \   000040                REQUIRE _A_TB3CCTL4_L
+   \   000040                REQUIRE _A_TB3CCR4_L
+
+   \                                 In  segment INTVEC, offset 0x54, root
+   \                     `??TIMER0_B1_ISR::??INTVEC 84`:
+   \   000054   ....         DC16    TIMER0_B1_ISR
+
+   \                                 In  segment INTVEC, offset 0x56, root
+   \                     `??Timer0_B0_ISR::??INTVEC 86`:
+   \   000056   ....         DC16    Timer0_B0_ISR
+
+   Maximum stack usage in bytes:
+
+   CSTACK Function
+   ------ --------
+      4   Init_Timer_B3
+      6   TIMER0_B1_ISR
+      4   Timer0_B0_ISR
+
+
+   Segment part sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       2  IOT_counter
+      64  Init_Timer_B3
+       2  SW1_pressed
+       2  SW2_pressed
+     122  TIMER0_B1_ISR
+       2  TIMER0_B1_ISR::??INTVEC 84
+      52  Timer0_B0_ISR
+       2  Timer0_B0_ISR::??INTVEC 86
+       2  _A_PAIE_L
+       2  _A_PAIFG_L
+       2  _A_PBIE_L
+       2  _A_PBIFG_L
+       2  _A_TB0CCR0_L
+       2  _A_TB0CCR1_L
+       2  _A_TB0CCR2_L
+       2  _A_TB0CCTL0_L
+       2  _A_TB0CCTL1_L
+       2  _A_TB0IV_L
+       2  _A_TB3CCR0_L
+       2  _A_TB3CCR1_L
+       2  _A_TB3CCR2_L
+       2  _A_TB3CCR3_L
+       2  _A_TB3CCR4_L
+       2  _A_TB3CCTL1_L
+       2  _A_TB3CCTL2_L
+       2  _A_TB3CCTL3_L
+       2  _A_TB3CCTL4_L
+       2  _A_TB3CTL_L
+       2  debounce_countSW1
+       2  debounce_countSW2
+       2  display_counter
+       2  num8_counter
+       2  project7_counter
+       2  serial_counter
+       2  status_counter
+
+ 
+  64 bytes in segment CODE
+  40 bytes in segment DATA16_AN
+  20 bytes in segment DATA16_Z
+   4 bytes in segment INTVEC
+ 174 bytes in segment ISR_CODE
+ 
+ 238 bytes of CODE  memory
+   0 bytes of CONST memory (+  4 bytes shared)
+  20 bytes of DATA  memory (+ 40 bytes shared)
+
+Errors: none
+Warnings: none

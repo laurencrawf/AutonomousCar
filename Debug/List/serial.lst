@@ -1,0 +1,327 @@
+###############################################################################
+#
+# IAR C/C++ Compiler V7.12.3.989/W32 for MSP430           24/Apr/2020  12:34:17
+# Copyright 1996-2019 IAR Systems AB.
+# PC-locked license - IAR Embedded Workbench for MSP430, 8K KickStart Edition 7.12
+#
+#    __rt_version  =  3
+#    __double_size =  32
+#    __reg_r4      =  free
+#    __reg_r5      =  free
+#    __pic         =  no
+#    __core        =  430X
+#    __data_model  =  small
+#    __code_model  =  large
+#    Source file   =  
+#        C:\Users\laure\OneDrive\Documents\ECE_306_Code\Project 10 Code
+#        Submission\serial.c
+#    Command line  =  
+#        -f C:\Users\laure\AppData\Local\Temp\EWEDBA.tmp
+#        ("C:\Users\laure\OneDrive\Documents\ECE_306_Code\Project 10 Code
+#        Submission\serial.c" -lC
+#        "C:\Users\laure\OneDrive\Documents\ECE_306_Code\Project 10 Code
+#        Submission\Debug\List" -o
+#        "C:\Users\laure\OneDrive\Documents\ECE_306_Code\Project 10 Code
+#        Submission\Debug\Obj" --no_cse --no_unroll --no_inline
+#        --no_code_motion --no_tbaa --debug -D__MSP430FR2355__ -e --double=32
+#        --dlib_config "C:\Program Files (x86)\IAR Systems\Embedded Workbench
+#        8.0\430\lib\dlib\dl430xlsfn.h" -I ./\ --core=430X --data_model=small
+#        -On --multiplier=32 --hw_workaround=CPU40 --code_model=large)
+#    Locale        =  English_USA.1252
+#    List file     =  
+#        C:\Users\laure\OneDrive\Documents\ECE_306_Code\Project 10 Code
+#        Submission\Debug\List\serial.lst
+#    Object file   =  
+#        C:\Users\laure\OneDrive\Documents\ECE_306_Code\Project 10 Code
+#        Submission\Debug\Obj\serial.r43
+#
+###############################################################################
+
+C:\Users\laure\OneDrive\Documents\ECE_306_Code\Project 10 Code Submission\serial.c
+      1          #include  "functions.h"
+      2          #include  "msp430.h"
+
+   \                                 In  segment DATA16_AN, at 0x500
+   \   union <unnamed> _A_UCA0CTLW0_L
+   \                     _A_UCA0CTLW0_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x506
+   \   union <unnamed> _A_UCA0BRW_L
+   \                     _A_UCA0BRW_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x508
+   \   union <unnamed> _A_UCA0MCTLW_L
+   \                     _A_UCA0MCTLW_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x50e
+   \   union <unnamed> _A_UCA0TXBUF_L
+   \                     _A_UCA0TXBUF_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x51a
+   \   union <unnamed> _A_UCA0IE_L
+   \                     _A_UCA0IE_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x51c
+   \   union <unnamed> _A_UCA0IFG_L
+   \                     _A_UCA0IFG_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x580
+   \   union <unnamed> _A_UCA1CTLW0_L
+   \                     _A_UCA1CTLW0_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x586
+   \   union <unnamed> _A_UCA1BRW_L
+   \                     _A_UCA1BRW_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x588
+   \   union <unnamed> _A_UCA1MCTLW_L
+   \                     _A_UCA1MCTLW_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x59a
+   \   union <unnamed> _A_UCA1IE_L
+   \                     _A_UCA1IE_L:
+   \   000000                DS8 2
+      3          #include <string.h>
+      4          #include "macros.h"
+      5          
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+      6          volatile unsigned int usb_rx_ring_wr;
+   \                     usb_rx_ring_wr:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+      7          unsigned int usb_rx_ring_rd;
+   \                     usb_rx_ring_rd:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+      8          volatile unsigned int usb_tx_ring_wr;
+   \                     usb_tx_ring_wr:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+      9          unsigned int usb_tx_ring_rd;
+   \                     usb_tx_ring_rd:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 1, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     10          volatile char USB_Char_Rx[SMALL_RING_SIZE];
+   \                     USB_Char_Rx:
+   \   000000                DS8 32
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     11          int pcflag;
+   \                     pcflag:
+   \   000000                DS8 2
+     12          extern char newbuffer[ARR2][PBSIZE];
+     13          extern int a;
+     14          extern int b; 
+     15          extern volatile unsigned int serial_counter;
+     16          
+
+   \                                 In  segment CODE, align 2
+     17          void Init_Serial_UCA0(int number){
+   \                     Init_Serial_UCA0:
+     18            int i;
+     19          
+     20            for(i=RESET_STATE; i<SMALL_RING_SIZE; i++){
+   \   000000   0F43         MOV.W   #0x0, R15
+   \                     ??Init_Serial_UCA0_0:
+   \   000002   3F902000     CMP.W   #0x20, R15
+   \   000006   0434         JGE     ??Init_Serial_UCA0_2
+     21              USB_Char_Rx[i] = USBRX; // USB Rx Buffer
+   \   000008   CF43....     MOV.B   #0x0, USB_Char_Rx(R15)
+     22            }
+   \   00000C   1F53         ADD.W   #0x1, R15
+   \   00000E   F93F         JMP     ??Init_Serial_UCA0_0
+     23            usb_rx_ring_wr = BEGINNING;
+   \                     ??Init_Serial_UCA0_2:
+   \   000010   8243....     MOV.W   #0x0, &usb_rx_ring_wr
+     24            usb_rx_ring_rd = BEGINNING;
+   \   000014   8243....     MOV.W   #0x0, &usb_rx_ring_rd
+     25            //for(i=0; i<LARGE_RING_SIZE; i++){ // May not use this
+     26              //USB_Char_Tx[i] = 0x00; // USB Tx Buffer
+     27            //}
+     28            usb_tx_ring_wr = BEGINNING;
+   \   000018   8243....     MOV.W   #0x0, &usb_tx_ring_wr
+     29            usb_tx_ring_rd = BEGINNING;
+   \   00001C   8243....     MOV.W   #0x0, &usb_tx_ring_rd
+     30            // Configure UART 0
+     31            UCA0CTLW0 = RESET_STATE; // Use word register
+   \   000020   82430005     MOV.W   #0x0, &0x500
+     32            UCA0CTLW0 |= UCSWRST; // Set Software reset enable
+   \   000024   92D30005     BIS.W   #0x1, &0x500
+     33            UCA0CTLW0 |= UCSSEL__SMCLK; // Set SMCLK as fBRCLK
+   \   000028   B2D080000005 BIS.W   #0x80, &0x500
+     34            
+     35            if(number){
+   \   00002E   0C93         CMP.W   #0x0, R12
+   \   000030   0724         JEQ     ??Init_Serial_UCA0_3
+     36              UCA0BRW = BRW9600;
+   \   000032   B24034000605 MOV.W   #0x34, &0x506
+     37              UCA0MCTLW = MCTLW9600;
+   \   000038   B24011490805 MOV.W   #0x4911, &0x508
+   \   00003E   053C         JMP     ??Init_Serial_UCA0_1
+     38            }
+     39            else{
+     40              UCA0BRW = BRW115; //4 for 115,200
+   \                     ??Init_Serial_UCA0_3:
+   \   000040   A2420605     MOV.W   #0x4, &0x506
+     41              UCA0MCTLW = MCTLW115 ; //0x5551 for 115,200
+   \   000044   B24051550805 MOV.W   #0x5551, &0x508
+     42            }
+     43            
+     44            UCA0CTLW0 &= ~ UCSWRST; // Set Software reset enable
+   \                     ??Init_Serial_UCA0_1:
+   \   00004A   92C30005     BIC.W   #0x1, &0x500
+     45            UCA0IE |= UCRXIE; // Enable RX interrupt
+   \   00004E   92D31A05     BIS.W   #0x1, &0x51a
+     46          }
+   \   000052   1001         RETA
+   \   000054                REQUIRE _A_UCA0CTLW0_L
+   \   000054                REQUIRE _A_UCA0BRW_L
+   \   000054                REQUIRE _A_UCA0MCTLW_L
+   \   000054                REQUIRE _A_UCA0IE_L
+     47          
+
+   \                                 In  segment CODE, align 2
+     48          void Init_Serial_UCA1(void){
+   \                     Init_Serial_UCA1:
+     49            int i;
+     50            pcflag = FALSE;
+   \   000000   8243....     MOV.W   #0x0, &pcflag
+     51            
+     52            for(i=RESET_STATE; i<SMALL_RING_SIZE; i++){
+   \   000004   0F43         MOV.W   #0x0, R15
+   \                     ??Init_Serial_UCA1_0:
+   \   000006   3F902000     CMP.W   #0x20, R15
+   \   00000A   0434         JGE     ??Init_Serial_UCA1_1
+     53              USB_Char_Rx[i] = USBRX; // USB Rx Buffer
+   \   00000C   CF43....     MOV.B   #0x0, USB_Char_Rx(R15)
+     54            }
+   \   000010   1F53         ADD.W   #0x1, R15
+   \   000012   F93F         JMP     ??Init_Serial_UCA1_0
+     55            usb_rx_ring_wr = BEGINNING;
+   \                     ??Init_Serial_UCA1_1:
+   \   000014   8243....     MOV.W   #0x0, &usb_rx_ring_wr
+     56            usb_rx_ring_rd = BEGINNING;
+   \   000018   8243....     MOV.W   #0x0, &usb_rx_ring_rd
+     57            //for(i=0; i<LARGE_RING_SIZE; i++){ // May not use this
+     58              //USB_Char_Tx[i] = 0x00; // USB Tx Buffer
+     59            //}
+     60            usb_tx_ring_wr = BEGINNING;
+   \   00001C   8243....     MOV.W   #0x0, &usb_tx_ring_wr
+     61            usb_tx_ring_rd = BEGINNING;
+   \   000020   8243....     MOV.W   #0x0, &usb_tx_ring_rd
+     62            // Configure UART 0
+     63            UCA1CTLW0 = RESET_STATE; // Use word register
+   \   000024   82438005     MOV.W   #0x0, &0x580
+     64            UCA1CTLW0 |= UCSWRST; // Set Software reset enable
+   \   000028   92D38005     BIS.W   #0x1, &0x580
+     65            UCA1CTLW0 |= UCSSEL__SMCLK; // Set SMCLK as fBRCLK
+   \   00002C   B2D080008005 BIS.W   #0x80, &0x580
+     66            
+     67              UCA1BRW = BRW115; // 9,600 Baud  //4 for 115,200
+   \   000032   A2428605     MOV.W   #0x4, &0x586
+     68              UCA1MCTLW = MCTLW115 ; //0x5551 for 115,200
+   \   000036   B24051558805 MOV.W   #0x5551, &0x588
+     69            
+     70            UCA1CTLW0 &= ~ UCSWRST; // Set Software reset enable
+   \   00003C   92C38005     BIC.W   #0x1, &0x580
+     71            UCA1IE |= UCRXIE; // Enable RX interrupt
+   \   000040   92D39A05     BIS.W   #0x1, &0x59a
+     72          }
+   \   000044   1001         RETA
+   \   000046                REQUIRE _A_UCA1CTLW0_L
+   \   000046                REQUIRE _A_UCA1BRW_L
+   \   000046                REQUIRE _A_UCA1MCTLW_L
+   \   000046                REQUIRE _A_UCA1IE_L
+     73          
+
+   \                                 In  segment CODE, align 2
+     74          void out_character(char character){
+   \                     out_character:
+   \                     ??out_character_0:
+     75          //------------------------------------------------------------------------------
+     76          // The while loop will stall as long as the Flag is not set [port is busy]
+     77          while (!(UCA0IFG & UCTXIFG)); // USCI_A0 TX buffer ready?
+   \   000000   A2B31C05     BIT.W   #0x2, &0x51c
+   \   000004   FD2B         JNC     ??out_character_0
+     78          UCA0TXBUF = character;
+   \   000006   4C4C         MOV.B   R12, R12
+   \   000008   824C0E05     MOV.W   R12, &0x50e
+     79          //------------------------------------------------------------------------------
+     80          }
+   \   00000C   1001         RETA
+   \   00000E                REQUIRE _A_UCA0IFG_L
+   \   00000E                REQUIRE _A_UCA0TXBUF_L
+     81          
+
+   \                                 In  segment CODE, align 2
+     82          void IOT_Command(void){
+   \                     IOT_Command:
+     83           
+     84          }
+   \   000000   1001         RETA
+
+   Maximum stack usage in bytes:
+
+   CSTACK Function
+   ------ --------
+      4   IOT_Command
+      4   Init_Serial_UCA0
+      4   Init_Serial_UCA1
+      4   out_character
+
+
+   Segment part sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       2  IOT_Command
+      84  Init_Serial_UCA0
+      70  Init_Serial_UCA1
+      32  USB_Char_Rx
+       2  _A_UCA0BRW_L
+       2  _A_UCA0CTLW0_L
+       2  _A_UCA0IE_L
+       2  _A_UCA0IFG_L
+       2  _A_UCA0MCTLW_L
+       2  _A_UCA0TXBUF_L
+       2  _A_UCA1BRW_L
+       2  _A_UCA1CTLW0_L
+       2  _A_UCA1IE_L
+       2  _A_UCA1MCTLW_L
+      14  out_character
+       2  pcflag
+       2  usb_rx_ring_rd
+       2  usb_rx_ring_wr
+       2  usb_tx_ring_rd
+       2  usb_tx_ring_wr
+
+ 
+ 170 bytes in segment CODE
+  20 bytes in segment DATA16_AN
+  42 bytes in segment DATA16_Z
+ 
+ 170 bytes of CODE memory
+  42 bytes of DATA memory (+ 20 bytes shared)
+
+Errors: none
+Warnings: none
